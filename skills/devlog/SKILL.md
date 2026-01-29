@@ -9,7 +9,7 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 
 Create a development log for the current work session.
 
-This is an **infrastructure skill** -- Claude should auto-invoke it when starting substantive work (triggered by the "always create a devlog" writing convention).
+This is an **infrastructure skill**: Claude should auto-invoke it when starting substantive work (triggered by the "always create a devlog" writing convention).
 The user can also invoke it directly via `/cdocs:devlog feature_name`.
 
 ## Invocation
@@ -29,21 +29,23 @@ Fill in:
 - `type: devlog`, `state: live`, `status: wip`.
 - Tags relevant to the work.
 
-## Required Sections
+## Sections
 
-Each devlog must include:
+All devlogs should include an Objective, Plan, and Verification section.
+Most devlogs should include the other sections as well, but use your judgement (a quick config change doesn't need a debugging process section).
+You may also include novel sections not specified - use your judgement and think critically about what best documents the work.
 
-- **Objective** -- What needs to be accomplished and why.
-- **Plan** -- Step-by-step approach.
-- **Testing Approach** -- TDD? Integration tests? Manual verification? State it upfront.
+- **Objective:** What needs to be accomplished and why.
+- **Plan:** Step-by-step approach.
+- **Testing Approach:** TDD? Integration tests? Manual verification? State it upfront.
   - Skipping test-first for prototyping? Acknowledge it: "Rapid prototyping without test-first, will add coverage after."
-- **Implementation Notes** -- Technical decisions (why, not what) and issues solved.
-- **Debugging Process** (if bug fix) -- Systematic debugging using the 4-phase approach below.
-- **Changes Made** -- Table of files modified/created with brief descriptions.
-- **Testing** -- Build verification and test results.
-- **Screenshots** -- Visual changes with captions. Save to `cdocs/_media/YYYY-MM-DD_description.png`.
-- **Documentation Updated** -- Checklist of docs changed.
-- **Verification** (MANDATORY) -- Fresh evidence of completion. No completion claims without pasted evidence.
+- **Implementation Notes:** Technical decisions (why, not what) and issues solved.
+- **Debugging Process** (if bug fix): Systematic debugging using the 4-phase approach below.
+- **Changes Made:** Table of files modified/created with brief descriptions.
+- **Testing:** Build verification and test results.
+- **Screenshots:** Visual changes with captions. Save to `cdocs/_media/YYYY-MM-DD_description.png`.
+- **Documentation Updated:** Checklist of docs changed.
+- **Verification:** Fresh evidence of completion. No completion claims without pasted evidence.
 
 ## Debugging Process (Bug Fixes)
 
@@ -65,7 +67,7 @@ When fixing bugs, document systematic debugging phases:
 - Final fix with verification.
 - If 3+ fixes failed: architectural questions raised.
 
-## Verification Section (Mandatory)
+## Verification Section
 
 No completion claims without pasted evidence.
 

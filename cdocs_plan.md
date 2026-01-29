@@ -59,7 +59,7 @@ More details on the above fields:
    - by, at: same as in first_authored
    - how many rounds of review have occurred
 8. tags: limited freeform set of the most relevant topics the doc concerns.
-   - reviews should use tags like `self`, `fresh`, `runtime_validated`, `ui_validated`, `architecture`
+   - reviews should use tags like `self`, `fresh_agent`, `rereview_agent`, `runtime_validated`, `ui_validated`, `architecture`
    - proposals might get spun off as `future_work` `state:deferred`
 
 ### filenaming

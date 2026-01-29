@@ -9,9 +9,9 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 
 Generate a structured report.
 
-This is a **deliverable skill** -- the user explicitly requests a report.
+This is a **deliverable skill**: the user explicitly requests a report.
 Reports are audience-facing documents that summarize findings, status, or analysis.
-They differ from devlogs: reports answer "what did we learn/accomplish?"; devlogs answer "how did we do the work?"
+They differ from devlogs: reports answer "what did we learn/accomplish?" - devlogs answer "how did we do the work?"
 
 ## Invocation
 
@@ -44,13 +44,16 @@ Fill in:
 - `type: report`, `state: live`, `status: wip`.
 - Tags relevant to the report, including the subtype (e.g., `status`, `investigation`, `incident`).
 
-## Required Sections (All Subtypes)
+## Core Sections
 
-- **BLUF** -- 2-4 sentences: what, why, key finding, main recommendation.
-- **Context / Background** -- What prompted this report, relevant history.
-- **Key Findings** -- Bulleted discoveries, data, observations.
-- **Analysis** -- Interpretation of findings, implications.
-- **Recommendations** -- Prioritized action items with owners where applicable.
+All reports should include a BLUF and key findings. Most reports should include the other core sections as well, but use your judgement (a brief status update doesn't need a full analysis section).
+You may also include novel sections not specified - use your judgement and think critically about what best serves the report's audience.
+
+- **> BLUF:** 2-4 sentences: what, why, key finding, main recommendation.
+- **Context / Background:** What prompted this report, relevant history.
+- **Key Findings:** Bulleted discoveries, data, observations.
+- **Analysis:** Interpretation of findings, implications.
+- **Recommendations:** Prioritized action items with owners where applicable.
 
 ## Optional Sections (By Subtype)
 
@@ -61,20 +64,20 @@ Fill in:
 - **Metrics / KPIs**
 
 ### Investigation / Analysis Reports
-- **Methodology** -- How the investigation was conducted.
-- **Data** -- Raw data, measurements, benchmarks.
+- **Methodology:** How the investigation was conducted.
+- **Data:** Raw data, measurements, benchmarks.
 - **Alternatives considered**
 
 ### Incident Reports
-- **Timeline of events** -- Chronological sequence.
-- **Impact assessment** -- Users affected, duration, severity.
+- **Timeline of events:** Chronological sequence.
+- **Impact assessment:** Users affected, duration, severity.
 - **Root cause**
-- **Preventive measures** -- What changes prevent recurrence.
+- **Preventive measures:** What changes prevent recurrence.
 
 ### Audit Reports
 - **Scope and methodology**
 - **Compliance checklist**
-- **Severity ratings** for findings.
+- **Severity ratings** for findings
 - **Remediation deadlines**
 
 ### Retrospectives

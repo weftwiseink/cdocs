@@ -7,7 +7,7 @@ task_list: cdocs/plugin_architecture
 type: review
 state: live
 status: revision_requested
-tags: [architecture, self, fresh]
+tags: [architecture, self]
 ---
 
 # Review: CDocs Plugin Architecture
@@ -19,25 +19,25 @@ However, it has structural issues in three areas: (1) it misclassifies several C
 
 The 10-phase implementation plan is over-decomposed for what is predominantly a markdown-authoring task.
 
-**Verdict: revise** -- the architecture is sound in broad strokes but needs rework on the points below before implementation.
+**Verdict: revise**: the architecture is sound in broad strokes but needs rework on the points below before implementation.
 
 ## Section-by-Section Findings
 
 ### Devlog as a skill: category mismatch
 
-The proposal treats `/cdocs:devlog` identically to `/cdocs:proposal` -- a user-invoked command that creates a document.
+The proposal treats `/cdocs:devlog` identically to `/cdocs:proposal`, a user-invoked command that creates a document.
 This misses the fundamental difference in how devlogs work versus other doc types:
 
 - **Proposal, review, report:** The user explicitly requests a deliverable. "Write me a proposal about X." Skill invocation is the natural entry point.
-- **Devlog:** The user requests *work*. "Fix the auth bug." The devlog is infrastructure that Claude creates as a side effect of doing the work. The user should not need to invoke `/cdocs:devlog` -- it should happen automatically.
+- **Devlog:** The user requests *work*. "Fix the auth bug." The devlog is infrastructure that Claude creates as a side effect of doing the work. The user should not need to invoke `/cdocs:devlog` - it should happen automatically.
 
 The current CLAUDE.md encodes this correctly: "IMPORTANT: Always create a devlog" is a *rule*, not a command.
 The devlog skill is still useful as a scaffolding utility that Claude auto-invokes, but the proposal should:
-1. Distinguish between **deliverable skills** (proposal, review, report -- user-invoked) and **infrastructure skills** (devlog -- Claude-auto-invoked, user-invocable as fallback).
+1. Distinguish between **deliverable skills** (proposal, review, report: user-invoked) and **infrastructure skills** (devlog: Claude-auto-invoked, user-invocable as fallback).
 2. Make the "always create a devlog" rule the *trigger*, with the skill as the *mechanism*.
 3. Consider whether the skill should default to `disable-model-invocation: false` + document that Claude auto-invokes it, rather than presenting it as a peer of `/cdocs:proposal`.
 
-This isn't a fatal flaw -- the skill can work both ways -- but the proposal's framing conflates two different usage patterns.
+This isn't a fatal flaw (the skill can work both ways), but the proposal's framing conflates two different usage patterns.
 
 ### CLAUDE.md slimming table: misplaced migrations
 
@@ -58,10 +58,10 @@ The proposal says "any project can adopt CDocs by enabling the plugin and runnin
 This is the most important UX question for adoption and it's entirely absent.
 
 Options the proposal should evaluate:
-1. **Git clone + `--plugin-dir`** -- mentioned only in the test plan, not as a distribution strategy.
-2. **Marketplace installation** -- deferred to "future work."
-3. **Global install** (`~/.claude/plugins/cdocs/`) -- not mentioned.
-4. **Vendored into project** (copy `skills/` and `rules/` into `.claude/`) -- not mentioned.
+1. **Git clone + `--plugin-dir`**: mentioned only in the test plan, not as a distribution strategy.
+2. **Marketplace installation**: deferred to "future work."
+3. **Global install** (`~/.claude/plugins/cdocs/`): not mentioned.
+4. **Vendored into project** (copy `skills/` and `rules/` into `.claude/`): not mentioned.
 
 Without a distribution story, the plugin architecture is theoretical.
 At minimum, the proposal should specify the v1 installation flow and acknowledge the gap.
@@ -93,23 +93,23 @@ The proposal should acknowledge this scaling limitation and either:
 
 ### Hook script: missing implementation details
 
-The proposal references `cdocs-validate-frontmatter.sh` but doesn't address:
+The proposal references `cdocs_validate_frontmatter.sh` but doesn't address:
 - Where the script lives in the plugin directory (presumably `hooks/`).
-- How the hook command resolves the script path (needs `${CLAUDE_PLUGIN_ROOT}/hooks/cdocs-validate-frontmatter.sh`).
-- What the script's dependencies are (parsing YAML in bash is non-trivial; does it shell out to Python/Node?).
+- How the hook command resolves the script path (needs `${CLAUDE_PLUGIN_ROOT}/hooks/cdocs_validate_frontmatter.sh`).
+- What the script's dependencies are (parsing YAML in bash is non-trivial - does it shell out to Python/Node?).
 - Whether the script is executable and has a shebang.
 
 For a distributable plugin, the hook command should use `${CLAUDE_PLUGIN_ROOT}`:
 ```json
-"command": "${CLAUDE_PLUGIN_ROOT}/hooks/cdocs-validate-frontmatter.sh"
+"command": "${CLAUDE_PLUGIN_ROOT}/hooks/cdocs_validate_frontmatter.sh"
 ```
 
 ### Rules scoping: unspecified
 
 The proposal mentions rules should have "appropriate `paths` frontmatter for scoping" (Phase 2) but doesn't specify what that scoping is.
 This matters because:
-- `writing-conventions.md` should apply broadly (all files, all communication) -- probably **no path restriction**.
-- `frontmatter-spec.md` should arguably only apply when working on cdocs files -- `paths: ["cdocs/**/*.md"]`.
+- `writing_conventions.md` should apply broadly (all files, all communication) - probably **no path restriction**.
+- `frontmatter_spec.md` should arguably only apply when working on cdocs files: `paths: ["cdocs/**/*.md"]`.
 
 If both are unscoped, the frontmatter spec pollutes Claude's context when working on non-cdocs files.
 If the writing conventions are scoped to cdocs, they don't influence general communication.

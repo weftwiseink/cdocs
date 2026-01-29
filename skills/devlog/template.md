@@ -9,7 +9,7 @@ status: wip
 tags: []
 ---
 
-# TITLE -- Devlog
+# TITLE: Devlog
 
 ## Objective
 

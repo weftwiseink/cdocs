@@ -7,7 +7,7 @@ task_list: WORKSTREAM/TASK
 type: review
 state: live
 status: wip
-tags: [self_or_fresh]
+tags: [self_or_fresh_agent]
 ---
 
 # Review: TARGET_TITLE

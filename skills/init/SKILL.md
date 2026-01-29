@@ -41,7 +41,7 @@ See `/cdocs:devlog` for complete authoring guidelines.
 
 **Naming:** `YYYY-MM-DD_feature_name.md`
 
-**Required sections:** Objective, Plan, Implementation Notes, Changes Made, Verification (mandatory).
+**Key sections:** Objective, Plan, Implementation Notes, Changes Made, Verification.
 ```
 
 ### proposals/README.md
@@ -53,7 +53,7 @@ See `/cdocs:proposal` for complete authoring guidelines.
 
 **Naming:** `YYYY-MM-DD_topic.md`
 
-**Required sections:** BLUF, Objective, Background, Proposed Solution, Design Decisions, Edge Cases, Test Plan, Implementation Phases.
+**Key sections:** BLUF, Objective, Background, Proposed Solution, Design Decisions, Edge Cases, Phases.
 ```
 
 ### reviews/README.md
@@ -65,7 +65,7 @@ See `/cdocs:review` for complete authoring guidelines.
 
 **Naming:** `YYYY-MM-DD_review_of_{doc_name}.md`
 
-**Required sections:** Summary Assessment, Section-by-Section Findings, Verdict, Action Items.
+**Key sections:** Summary Assessment, Section-by-Section Findings, Verdict, Action Items.
 ```
 
 ### reports/README.md
@@ -77,7 +77,7 @@ See `/cdocs:report` for complete authoring guidelines.
 
 **Naming:** `YYYY-MM-DD_topic.md`
 
-**Required sections:** BLUF, Scope, Findings/Analysis, Conclusions, Recommendations.
+**Key sections:** BLUF, Context/Background, Key Findings, Analysis, Recommendations.
 ```
 
 ## Notes

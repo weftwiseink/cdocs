@@ -2,10 +2,10 @@
 # CDocs frontmatter validation hook (PostToolUse on Write|Edit)
 #
 # Checks if a written/edited cdocs file has required frontmatter fields.
-# Informational only -- warns via additionalContext, never blocks.
+# Informational only: warns via additionalContext, never blocks.
 #
 # Dependencies: bash, jq (for JSON parsing of stdin)
-# No external YAML parser -- uses regex-based field detection.
+# No external YAML parser - uses regex-based field detection.
 
 set -euo pipefail
 

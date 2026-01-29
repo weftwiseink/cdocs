@@ -6,7 +6,7 @@ All CDocs documents and communication should follow these conventions.
 
 Lead documents and substantial communications with a BLUF summary.
 A good BLUF results in no surprises when the full body of work is scrutinized.
-It doesn't need every detail -- just the essential takeaway.
+It doesn't need every detail, just the essential takeaway.
 
 Format: `> BLUF: ...` or `> BLUF(author/workstream): ...`
 
@@ -26,9 +26,9 @@ This makes diffs cleaner and editing easier.
 
 Use these callouts to leave context for future readers:
 
-- `NOTE(author/workstream):` -- Context, caveats, or design commentary that doesn't belong in the main flow.
-- `TODO(author/workstream):` -- Known work remaining.
-- `WARN(author/workstream):` -- Risks, gotchas, or things that could break.
+- `NOTE(author/workstream):` Context, caveats, or design commentary that doesn't belong in the main flow.
+- `TODO(author/workstream):` Known work remaining.
+- `WARN(author/workstream):` Risks, gotchas, or things that could break.
 
 The parenthetical is an attribution in the format `author/workstream`, which often maps to a feature branch name.
 Add slashes for subprojects: `NOTE(mjr/cdocs/hooks)`.
@@ -66,6 +66,12 @@ Approach and reflect on work with a realist mindset.
 Always create a devlog when starting substantive work.
 The devlog is the single source of truth for a work session.
 Update it as you go, not at the end.
+
+## Punctuation: Prefer Colons Over Em-Dashes
+
+Use colons, commas, or periods instead of em-dashes (` -- ` or `—`).
+For brief qualifying statements, use ` - ` (spaced hyphen).
+Em-dashes and semicolons should be used sparingly.
 
 ## Avoid Emojis
 

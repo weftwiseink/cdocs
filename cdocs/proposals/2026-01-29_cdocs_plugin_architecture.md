@@ -18,14 +18,14 @@ tags: [architecture, claude_skills, plugin, future_work]
 
 > BLUF: Package CDocs as a Claude Code plugin with six skills, shared rules, and a validation hook.
 > Skills split into two categories: **deliverable skills** (proposal, review, report) that the user explicitly invokes, and **infrastructure skills** (devlog, status, init) that Claude auto-invokes or that manage the system.
-> The "always create a devlog" directive stays as a rule (the trigger); the devlog skill provides the scaffolding (the mechanism).
+> The "always create a devlog" directive stays as a rule (the trigger) - the devlog skill provides the scaffolding (the mechanism).
 > Existing README guidelines are absorbed into skills, but `init` generates lightweight READMEs in each `cdocs/` subdir for plugin-less discoverability.
 > v1 distribution: git clone + `claude --plugin-dir`.
 > Key sources: Claude Code plugin spec (`.claude-plugin/plugin.json`, skills, hooks, rules), existing `cdocs/` READMEs, `cdocs_plan.md`.
 
 ## Objective
 
-Transform the current CDocs repo -- a collection of markdown guidelines and directory scaffolding copied from a project -- into a distributable Claude Code plugin.
+Transform the current CDocs repo (a collection of markdown guidelines and directory scaffolding copied from a project) into a distributable Claude Code plugin.
 The plugin should encode document creation workflows, writing conventions, and formatting enforcement so that any project can adopt CDocs by installing the plugin and running `/cdocs:init`.
 
 ## Background
@@ -71,11 +71,11 @@ cdocs/                                  # repo root = plugin root
 │       └── SKILL.md                    # scaffold cdocs in a project
 ├── hooks/
 │   ├── hooks.json                      # PostToolUse validation
-│   └── cdocs-validate-frontmatter.sh   # validation script
+│   └── cdocs_validate_frontmatter.sh   # validation script
 ├── rules/
-│   ├── writing-conventions.md          # BLUF, brevity, NOTE/TODO/WARN (unscoped)
-│   ├── workflow-patterns.md            # parallel agents, subagent dev, checklists (unscoped)
-│   └── frontmatter-spec.md            # field definitions + enums (scoped to cdocs/)
+│   ├── writing_conventions.md          # BLUF, brevity, NOTE/TODO/WARN (unscoped)
+│   ├── workflow_patterns.md            # parallel agents, subagent dev, checklists (unscoped)
+│   └── frontmatter_spec.md            # field definitions + enums (scoped to cdocs/)
 ├── cdocs/                              # plugin's own dev docs (dogfooding)
 │   ├── devlogs/
 │   ├── proposals/
@@ -120,21 +120,21 @@ Option C loses `/cdocs:` namespacing (skills become `/devlog`, `/proposal`, etc.
 
 Skills fall into two categories based on invocation pattern:
 
-**Deliverable skills** -- the user explicitly requests a document:
+**Deliverable skills:** the user explicitly requests a document:
 - `/cdocs:proposal`, `/cdocs:review`, `/cdocs:report`
-- User-invoked; Claude may also suggest them when relevant.
+- User-invoked - Claude may also suggest them when relevant.
 
-**Infrastructure skills** -- Claude auto-invokes as part of normal work, or the user invokes for system management:
-- `/cdocs:devlog` -- Claude auto-invokes when starting substantive work (triggered by the "always create a devlog" rule). User can also invoke manually.
-- `/cdocs:status` -- User invokes for doc inventory; Claude may auto-invoke to check state.
-- `/cdocs:init` -- User invokes to scaffold a new project.
+**Infrastructure skills:** Claude auto-invokes as part of normal work, or the user invokes for system management:
+- `/cdocs:devlog`: Claude auto-invokes when starting substantive work (triggered by the "always create a devlog" rule). User can also invoke manually.
+- `/cdocs:status`: User invokes for doc inventory - Claude may auto-invoke to check state.
+- `/cdocs:init`: User invokes to scaffold a new project.
 
-#### `/cdocs:devlog` -- Create a development log (infrastructure)
+#### `/cdocs:devlog`: Create a development log (infrastructure)
 
 - **User-invocable:** yes (also auto-invocable by Claude)
 - **Argument hint:** `[feature_name]`
 - **SKILL.md frontmatter:** `disable-model-invocation: false` (default, explicit for clarity)
-- **Invocation model:** The `rules/writing-conventions.md` rule contains the "always create a devlog when starting substantive work" directive. This rule is the *trigger*. When Claude begins work that warrants a devlog, it invokes this skill as the *mechanism* to create the properly formatted file. The user can also invoke `/cdocs:devlog feature_name` directly.
+- **Invocation model:** The `rules/writing_conventions.md` rule contains the "always create a devlog when starting substantive work" directive. This rule is the *trigger*. When Claude begins work that warrants a devlog, it invokes this skill as the *mechanism* to create the properly formatted file. The user can also invoke `/cdocs:devlog feature_name` directly.
 - **Behavior:**
   1. Determine date and feature name (from arg or prompt).
   2. Create `cdocs/devlogs/YYYY-MM-DD_feature_name.md` with frontmatter and section scaffold from `template.md`.
@@ -143,7 +143,7 @@ Skills fall into two categories based on invocation pattern:
   5. Return context instructing Claude to update the devlog as work proceeds (single source of truth).
 - **Skill instructions absorb:** `cdocs/devlogs/README.md` content (structure, best practices, verification requirements, debugging phases).
 
-#### `/cdocs:proposal` -- Author a proposal (deliverable)
+#### `/cdocs:proposal`: Author a proposal (deliverable)
 
 - **User-invocable:** yes
 - **Argument hint:** `[topic]`
@@ -153,7 +153,7 @@ Skills fall into two categories based on invocation pattern:
   3. Guide Claude through BLUF-first drafting, design decisions, implementation phases.
 - **Skill instructions absorb:** `cdocs/proposals/README.md` content (required sections, implementation phase guidance, author checklist).
 
-#### `/cdocs:review` -- Review a document (deliverable)
+#### `/cdocs:review`: Review a document (deliverable)
 
 - **User-invocable:** yes
 - **Argument hint:** `<path_to_document>`
@@ -170,20 +170,20 @@ Skills fall into two categories based on invocation pattern:
 > Phase 3 includes researching best practices for structured document reviews in Claude-assisted workflows.
 > Initial structure above is a reasonable starting point, but should be validated.
 
-#### `/cdocs:report` -- Generate a report (deliverable)
+#### `/cdocs:report`: Generate a report (deliverable)
 
 - **User-invocable:** yes
 - **Argument hint:** `[topic]`
 - **Behavior:**
   1. Create `cdocs/reports/YYYY-MM-DD_topic.md` with frontmatter.
-  2. Reports are more flexible than other types -- they summarize findings, status, or analysis.
+  2. Reports are more flexible than other types: they summarize findings, status, or analysis.
   3. Structure: BLUF, scope, findings/analysis, conclusions, recommendations.
 
 > NOTE(claude-opus-4-5/plugin_architecture): Report structure also needs research.
 > Reports likely vary more than other types (status report vs. analysis report vs. audit).
 > Phase 3 includes researching report taxonomies and deciding whether subtypes warrant separate templates.
 
-#### `/cdocs:status` -- Query and manage documents (infrastructure)
+#### `/cdocs:status`: Query and manage documents (infrastructure)
 
 - **User-invocable:** yes (also auto-invocable by Claude)
 - **Argument hint:** `[filter]`
@@ -201,7 +201,7 @@ Skills fall into two categories based on invocation pattern:
   For larger corpora, a frontmatter index file (`cdocs/.index.json`) maintained by the PostToolUse hook would avoid repeated full scans.
   Alternatively, promote the MCP server timeline if this becomes a bottleneck.
 
-#### `/cdocs:init` -- Scaffold CDocs in a project (infrastructure)
+#### `/cdocs:init`: Scaffold CDocs in a project (infrastructure)
 
 - **User-invocable:** yes
 - **Argument hint:** `[--minimal]`
@@ -217,9 +217,9 @@ Skills fall into two categories based on invocation pattern:
 Rules are loaded automatically when the plugin is active.
 They provide ambient guidance without requiring explicit skill invocation.
 
-#### `rules/writing-conventions.md` (unscoped)
+#### `rules/writing_conventions.md` (unscoped)
 
-No `paths` restriction -- applies to all files and communication.
+No `paths` restriction - applies to all files and communication.
 
 Extracted from current `CLAUDE.md` "High-level Communication notes" and "Documentation Updates" sections:
 - BLUF convention (when, how)
@@ -231,9 +231,9 @@ Extracted from current `CLAUDE.md` "High-level Communication notes" and "Documen
 - Critical and detached analysis over false validation
 - "Always create a devlog when starting substantive work" directive
 
-#### `rules/workflow-patterns.md` (unscoped)
+#### `rules/workflow_patterns.md` (unscoped)
 
-No `paths` restriction -- applies to all work sessions.
+No `paths` restriction - applies to all work sessions.
 
 Extracted from current `CLAUDE.md` workflow sections:
 - Dispatching parallel agents (when, how, documentation requirements)
@@ -243,7 +243,7 @@ Extracted from current `CLAUDE.md` workflow sections:
 These are general workflow patterns, not type-specific.
 They apply during any substantive work, not just when authoring a particular doc type.
 
-#### `rules/frontmatter-spec.md` (scoped to `cdocs/**/*.md`)
+#### `rules/frontmatter_spec.md` (scoped to `cdocs/**/*.md`)
 
 ```yaml
 ---
@@ -276,7 +276,7 @@ Extracted from `cdocs_plan.md` "frontmatter" section:
       "hooks": [
         {
           "type": "command",
-          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/cdocs-validate-frontmatter.sh",
+          "command": "${CLAUDE_PLUGIN_ROOT}/hooks/cdocs_validate_frontmatter.sh",
           "timeout": 5
         }
       ]
@@ -285,10 +285,10 @@ Extracted from `cdocs_plan.md` "frontmatter" section:
 }
 ```
 
-**Script location:** `hooks/cdocs-validate-frontmatter.sh` in the plugin directory, resolved via `${CLAUDE_PLUGIN_ROOT}`.
+**Script location:** `hooks/cdocs_validate_frontmatter.sh` in the plugin directory, resolved via `${CLAUDE_PLUGIN_ROOT}`.
 
-**Implementation:** Bash script with lightweight YAML parsing (regex-based extraction of frontmatter delimiters and required field names -- no external YAML parser dependency).
-Full schema validation is out of scope for the hook; the script checks for presence of required fields, not value correctness.
+**Implementation:** Bash script with lightweight YAML parsing (regex-based extraction of frontmatter delimiters and required field names - no external YAML parser dependency).
+Full schema validation is out of scope for the hook - the script checks for presence of required fields, not value correctness.
 
 **Behavior:**
 - Reads `tool_input.file_path` from stdin JSON.
@@ -296,7 +296,7 @@ Full schema validation is out of scope for the hook; the script checks for prese
 - Reads the file from disk, extracts the YAML frontmatter block.
 - Checks for required fields (`first_authored`, `type`, `state`, `status`).
 - On missing fields: exits 0 with JSON `additionalContext` warning.
-- Does NOT block writes (informational only) -- avoids disrupting workflow.
+- Does NOT block writes (informational only), avoiding disrupting workflow.
 
 > NOTE(claude-opus-4-5/plugin_architecture): The markdown formatting automation (table alignment, diagram padding) mentioned in `cdocs_plan.md` is deferred to future work.
 > It's a non-trivial text processing task that deserves its own proposal.
@@ -308,18 +308,18 @@ The current `CLAUDE.md` contains content that should migrate into plugin compone
 | Current CLAUDE.md Section | Destination |
 |---------------------------|-------------|
 | "Devlog Format" | `skills/devlog/SKILL.md` |
-| "Documentation Updates" | `rules/writing-conventions.md` |
-| "High-level Communication notes" | `rules/writing-conventions.md` |
-| "Dispatching Parallel Agents" | `rules/workflow-patterns.md` |
-| "Subagent-Driven Development" | `rules/workflow-patterns.md` |
-| "Final Checklist Review" | `rules/workflow-patterns.md` |
+| "Documentation Updates" | `rules/writing_conventions.md` |
+| "High-level Communication notes" | `rules/writing_conventions.md` |
+| "Dispatching Parallel Agents" | `rules/workflow_patterns.md` |
+| "Subagent-Driven Development" | `rules/workflow_patterns.md` |
+| "Final Checklist Review" | `rules/workflow_patterns.md` |
 | "Workflow" (conventional commits) | Stays in `CLAUDE.md` (project-specific, not CDocs) |
-| "Guidelines" (dedup) | `rules/writing-conventions.md` |
-| "Always create a devlog" directive | `rules/writing-conventions.md` |
+| "Guidelines" (dedup) | `rules/writing_conventions.md` |
+| "Always create a devlog" directive | `rules/writing_conventions.md` |
 
 Post-migration, `CLAUDE.md` retains only:
 - Plugin development workflow (conventional commits, etc.)
-- Reference to CDocs plugin for guidelines (`@rules/writing-conventions.md`)
+- Reference to CDocs plugin for guidelines (`@rules/writing_conventions.md`)
 - Any project-specific directives not covered by the plugin
 
 ## Important Design Decisions
@@ -335,12 +335,12 @@ Bare skills in `.claude/skills/` would work for single-project use but don't dis
 
 **Decision:** Two skill categories with different invocation models.
 
-**Why:** Proposals, reviews, and reports are deliverables the user explicitly requests -- user invocation is the natural entry point.
+**Why:** Proposals, reviews, and reports are deliverables the user explicitly requests - user invocation is the natural entry point.
 Devlogs are work infrastructure that Claude creates automatically as a side effect of doing work.
 Treating them identically obscures this distinction.
-The devlog skill defaults to auto-invocable (Claude invokes it when the writing-conventions rule triggers), while deliverable skills wait for explicit user requests.
+The devlog skill defaults to auto-invocable (Claude invokes it when the writing_conventions rule triggers), while deliverable skills wait for explicit user requests.
 
-### Skills absorb READMEs; init generates fallback READMEs
+### Skills absorb READMEs - init generates fallback READMEs
 
 **Decision:** Canonical guidelines move into `SKILL.md` files. The `init` skill generates lightweight READMEs in each `cdocs/` subdir.
 
@@ -360,7 +360,7 @@ Rules are loaded as ambient context, so skills can reference them implicitly.
 
 ### General workflow patterns as rules, not type-specific skills
 
-**Decision:** Parallel agent dispatch, subagent-driven development, and completion checklists go into `rules/workflow-patterns.md`, not into individual skills.
+**Decision:** Parallel agent dispatch, subagent-driven development, and completion checklists go into `rules/workflow_patterns.md`, not into individual skills.
 
 **Why:** These are general workflow patterns.
 You dispatch parallel agents when debugging across subsystems, not when writing a devlog.
@@ -379,31 +379,31 @@ Future: could add a `PreToolUse` blocking hook for CI/review workflows if needed
 
 **Decision:** Encode as a rule (ambient reminder), not a hard hook.
 
-**Why:** A `SessionStart` hook that forces devlog creation would be too aggressive -- not every session needs one (e.g., quick status checks, reviews).
+**Why:** A `SessionStart` hook that forces devlog creation would be too aggressive, since not every session needs one (e.g., quick status checks, reviews).
 The rule makes it a strong convention that Claude follows by default but that can be overridden by context.
 The devlog skill is the mechanism Claude uses when the rule triggers.
 
 ### Status skill vs. MCP server for doc queries
 
-**Decision:** Start with a skill; evolve to MCP later.
+**Decision:** Start with a skill - evolve to MCP later.
 
 **Why:** A skill using `Glob`+`Read` is sufficient for scanning a `cdocs/` directory up to ~100 documents.
 An MCP server adds operational complexity (process management, transport) that isn't justified until the query interface needs to be richer (cross-repo queries, full-text search, aggregation) or the corpus exceeds the skill's practical limits.
-The skill establishes the UX; the MCP server can replace it transparently later.
+The skill establishes the UX - the MCP server can replace it transparently later.
 
 ## Unaccounted-for Process Conventions
 
 The following conventions are likely in use but not yet codified.
 They should be captured during implementation and may warrant additional skills or rule content.
 
-1. **Template prompts for proposals and reviews** -- The user likely has conversational patterns for requesting these. Could become skill argument presets or prompt templates.
-2. **Review workflow state machine** -- Request review -> conduct review -> revision cycle -> accept. The `last_reviewed` field tracks this, but the workflow isn't encoded anywhere.
-3. **Devlog-as-session-anchor** -- Convention of creating/opening a devlog at session start and updating throughout. Documented in the devlog skill's invocation model section.
-4. **Media management** -- Screenshot capture, naming (`YYYY-MM-DD_description.png`), embedding. Currently manual; could be partially automated.
-5. **Task list <-> frontmatter connection** -- How `task_list` in frontmatter relates to Claude's task tracking system. Needs specification.
-6. **Document state transitions** -- Valid transitions (e.g., `wip` -> `review_ready` -> `done`) are implied but not enforced. Could be a validation hook.
-7. **Cross-document references** -- Proposals spawning sub-proposals, devlogs referencing proposals. No linking convention exists.
-8. **Conventional commit integration** -- Commits that correspond to doc state changes (e.g., committing a devlog with the work it documents).
+1. **Template prompts for proposals and reviews:** The user likely has conversational patterns for requesting these. Could become skill argument presets or prompt templates.
+2. **Review workflow state machine:** Request review -> conduct review -> revision cycle -> accept. The `last_reviewed` field tracks this, but the workflow isn't encoded anywhere.
+3. **Devlog-as-session-anchor:** Convention of creating/opening a devlog at session start and updating throughout. Documented in the devlog skill's invocation model section.
+4. **Media management:** Screenshot capture, naming (`YYYY-MM-DD_description.png`), embedding. Currently manual - could be partially automated.
+5. **Task list <-> frontmatter connection:** How `task_list` in frontmatter relates to Claude's task tracking system. Needs specification.
+6. **Document state transitions:** Valid transitions (e.g., `wip` -> `review_ready` -> `done`) are implied but not enforced. Could be a validation hook.
+7. **Cross-document references:** Proposals spawning sub-proposals, devlogs referencing proposals. No linking convention exists.
+8. **Conventional commit integration:** Commits that correspond to doc state changes (e.g., committing a devlog with the work it documents).
 
 ## Edge Cases / Challenging Scenarios
 
@@ -435,9 +435,9 @@ Testing is primarily manual/interactive given the skill-based nature:
 ### Phase 1: Foundation (plugin skeleton + rules + init)
 
 - Create `.claude-plugin/plugin.json` manifest.
-- Write `rules/writing-conventions.md` (extracted from CLAUDE.md).
-- Write `rules/workflow-patterns.md` (extracted from CLAUDE.md).
-- Write `rules/frontmatter-spec.md` with `paths: ["cdocs/**/*.md"]` scoping (extracted from `cdocs_plan.md`).
+- Write `rules/writing_conventions.md` (extracted from CLAUDE.md).
+- Write `rules/workflow_patterns.md` (extracted from CLAUDE.md).
+- Write `rules/frontmatter_spec.md` with `paths: ["cdocs/**/*.md"]` scoping (extracted from `cdocs_plan.md`).
 - Implement `skills/init/SKILL.md` with directory scaffolding and README generation.
 - **Success criteria:** `claude --plugin-dir .` loads the plugin. Rules appear in ambient context. `/cdocs:init` creates the directory structure with READMEs in a test project.
 - **Constraints:** Do not modify existing `cdocs/` content or CLAUDE.md yet.
@@ -468,7 +468,7 @@ Testing is primarily manual/interactive given the skill-based nature:
 ### Phase 4: Management, hooks, and cleanup
 
 - Write `skills/status/SKILL.md` with Glob+Read-based doc scanning, filtering, and inline updates.
-- Write `hooks/hooks.json` and `hooks/cdocs-validate-frontmatter.sh` (bash, regex-based YAML field detection, no external dependencies).
+- Write `hooks/hooks.json` and `hooks/cdocs_validate_frontmatter.sh` (bash, regex-based YAML field detection, no external dependencies).
 - Slim the repo's `CLAUDE.md` by removing content that migrated to rules and skills.
 - Remove the original `cdocs/devlogs/README.md` and `cdocs/proposals/README.md` (absorbed into skills).
 - Write `README.md` with installation and usage instructions.
@@ -492,7 +492,7 @@ Phases 2 and 3 can run in parallel once Phase 1 is complete.
 
 These items from `cdocs_plan.md` are acknowledged but deferred:
 
-- **Markdown formatting automation:** Table alignment, diagram padding. Deserves its own proposal -- likely a `prettier` plugin or custom formatter invoked via hook.
+- **Markdown formatting automation:** Table alignment, diagram padding. Deserves its own proposal, likely a `prettier` plugin or custom formatter invoked via hook.
 - **MCP server for doc queries:** Replaces/augments the `status` skill with richer capabilities (cross-repo, full-text search, aggregation). Warranted when the skill UX proves limiting or the corpus exceeds ~100 docs.
 - **Plugin marketplace distribution:** Package for a marketplace once the plugin stabilizes. Requires `marketplace.json` entry and possibly a separate hosting repo.
 - **Metadata/taxonomy extension mechanism:** A way to overlay new conventions or fields experimentally before integrating them permanently. Could be a `rules/` override pattern.

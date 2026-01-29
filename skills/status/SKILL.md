@@ -9,7 +9,7 @@ allowed-tools: Glob, Read, Edit
 
 Query and manage CDocs document metadata.
 
-This is an **infrastructure skill** -- used to inspect and update the document corpus.
+This is an **infrastructure skill**, used to inspect and update the document corpus.
 Provides a lightweight "docs as DB" interface over `cdocs/` frontmatter.
 
 ## Invocation Modes

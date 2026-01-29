@@ -9,7 +9,7 @@ status: done
 tags: [architecture, claude_skills, plugin, proposal]
 ---
 
-# CDocs Plugin Architecture Proposal -- Devlog
+# CDocs Plugin Architecture Proposal: Devlog
 
 ## Objective
 
@@ -32,7 +32,7 @@ A plugin (`.claude-plugin/plugin.json`) gives namespaced commands (`/cdocs:devlo
 
 ### Skills absorb READMEs
 
-The current `devlogs/README.md` and `proposals/README.md` serve the exact purpose that `SKILL.md` files serve -- instructions for Claude.
+The current `devlogs/README.md` and `proposals/README.md` serve the exact purpose that `SKILL.md` files serve: instructions for Claude.
 Keeping both would create duplication.
 The proposal specifies removing the READMEs once skills absorb their content (Phase 9).
 
@@ -45,7 +45,7 @@ This aligns with the plan's request to "break the general high-level communicati
 ### Informational hooks, not blocking
 
 Blocking writes on frontmatter issues would disrupt workflow.
-The PostToolUse hook warns but doesn't block -- Claude can self-correct in context.
+The PostToolUse hook warns but doesn't block - Claude can self-correct in context.
 
 ### Review and report types flagged as research-needed
 
@@ -62,7 +62,7 @@ These are documented in the proposal for future expansion.
 
 Fresh-eyes review surfaced 9 action items. Key issues:
 
-1. **Devlog skill misclassified.** Devlogs are work infrastructure (Claude-auto-invoked), not user-requested deliverables. The proposal treats `/cdocs:devlog` identically to `/cdocs:proposal`, but the invocation model is fundamentally different. The "always create a devlog" rule should be the trigger; the skill is the mechanism.
+1. **Devlog skill misclassified.** Devlogs are work infrastructure (Claude-auto-invoked), not user-requested deliverables. The proposal treats `/cdocs:devlog` identically to `/cdocs:proposal`, but the invocation model is fundamentally different. The "always create a devlog" rule should be the trigger - the skill is the mechanism.
 2. **CLAUDE.md migration table moves general patterns into type-specific skills.** "Dispatching Parallel Agents" and "Subagent-Driven Development" are workflow-general, not devlog/proposal-specific. They should stay as rules.
 3. **No distribution story.** The proposal designs a plugin but never explains how users install it. Chicken-and-egg with the init skill.
 4. **README removal loses plugin-less fallback.** Without READMEs, `cdocs/` is opaque to non-plugin users and GitHub readers.
@@ -73,13 +73,13 @@ Full review: `cdocs/reviews/2026-01-29_review_of_cdocs_plugin_architecture.md`
 ### Revision applied (round 1)
 
 All 9 action items addressed in proposal rewrite:
-- Skills split into deliverable vs. infrastructure categories; devlog reclassified as infrastructure (auto-invoked).
-- CLAUDE.md migration table corrected: parallel agents, subagent dev, checklists -> `rules/workflow-patterns.md` (new rule file).
+- Skills split into deliverable vs. infrastructure categories - devlog reclassified as infrastructure (auto-invoked).
+- CLAUDE.md migration table corrected: parallel agents, subagent dev, checklists -> `rules/workflow_patterns.md` (new rule file).
 - Distribution/installation section added (git clone + `--plugin-dir`, vendor option).
 - Init skill generates lightweight fallback READMEs for plugin-less discoverability.
 - Status skill scaling acknowledged (~100 doc limit, index file mitigation path).
 - Hook script path uses `${CLAUDE_PLUGIN_ROOT}`, bash regex-based implementation specified.
-- Rules scoping explicit: writing-conventions and workflow-patterns unscoped, frontmatter-spec scoped to `cdocs/**/*.md`.
+- Rules scoping explicit: writing_conventions and workflow_patterns unscoped, frontmatter_spec scoped to `cdocs/**/*.md`.
 - Phases consolidated from 10 to 4.
 - Plugin dogfooding and rule precedence explanations added to edge cases.
 

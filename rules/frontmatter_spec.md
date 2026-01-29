@@ -45,27 +45,27 @@ Use `/` namespacing to capture workstream hierarchy: `organization/initial_scaff
 
 ### `type` (required)
 Corresponds to subdirectory under `cdocs/`:
-- `devlog` -- Development logs in `cdocs/devlogs/`
-- `proposal` -- Design proposals in `cdocs/proposals/`
-- `review` -- Document reviews in `cdocs/reviews/`
-- `report` -- Reports in `cdocs/reports/`
+- `devlog`: Development logs in `cdocs/devlogs/`
+- `proposal`: Design proposals in `cdocs/proposals/`
+- `review`: Document reviews in `cdocs/reviews/`
+- `report`: Reports in `cdocs/reports/`
 
 May be expanded as new doc types are added.
 
 ### `state` (required)
 High-level condition of the document and/or its related work:
-- `live` -- Active, current.
-- `deferred` -- Postponed for later. Common with proposals tagged `future_work`.
-- `archived` -- No longer active or relevant.
+- `live`: Active, current.
+- `deferred`: Postponed for later. Common with proposals tagged `future_work`.
+- `archived`: No longer active or relevant.
 
 ### `status` (required)
 Starts at `wip`. Additional values depend on type:
-- `wip` -- Work in progress. All types.
-- `review_ready` -- Statement of work complete, ready for review. Used by devlogs, proposals, reports.
+- `wip`: Work in progress. All types.
+- `review_ready`: Statement of work complete, ready for review. Used by devlogs, proposals, reports.
   - For devlogs, reviews apply to the work that was done, not just the document.
-- `evolved` -- Proposal has been superseded by a new version or follow-up proposal.
-- `result_accepted` -- Proposal's implementation results have been accepted.
-- `done` -- Work complete and verified.
+- `evolved`: Proposal has been superseded by a new version or follow-up proposal.
+- `result_accepted`: Proposal's implementation results have been accepted.
+- `done`: Work complete and verified.
 
 ### `last_reviewed` (optional, not on reviews)
 Tracks review history. Reviews themselves do not have this field.
@@ -76,7 +76,7 @@ Tracks review history. Reviews themselves do not have this field.
 
 ### `tags` (required)
 Limited freeform set of the most relevant topics.
-- Reviews should use tags like: `self`, `fresh`, `runtime_validated`, `ui_validated`, `architecture`.
+- Reviews should use tags like: `self`, `fresh_agent`, `rereview_agent`, `runtime_validated`, `ui_validated`, `architecture`.
 - Proposals might use: `future_work`, `architecture`, `claude_skills`.
 - Keep the set focused. Prefer reusing existing tags over inventing new ones.
 

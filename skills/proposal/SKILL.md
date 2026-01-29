@@ -9,7 +9,7 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 
 Author a design proposal document.
 
-This is a **deliverable skill** -- the user explicitly requests a proposal.
+This is a **deliverable skill**: the user explicitly requests a proposal.
 Proposals specify designs and solutions, outlining implementation phases.
 They should retain a "timeless" quality: design changes are noted in NOTE callouts or by reference to another document, not by rewriting.
 

@@ -9,18 +9,24 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 Conduct a structured review of a CDocs document.
 
-This is a **deliverable skill** -- the user explicitly requests a review.
+This is a **deliverable skill**: the user explicitly requests a review.
+
 Reviews evaluate a document's quality, correctness, and completeness, producing findings and a verdict.
+
+> IMPORTANT: Doc Reviews should keep an eye our for any underconsidered sections, potential pitfalls, and points in need of clarification.
+> Reviewer should surface the latter at the end of the review as multiple choice options.
+
 
 ## Invocation
 
 1. `$ARGUMENTS` must provide the path to the document to review (e.g., `cdocs/proposals/2026-01-29_topic.md`).
-   If missing, prompt the user for the path.
+   If missing, prompt the user for the path from a picker of recently edited plausible `cdocs/`.
 2. Read the target document fully.
-3. Determine today's date.
-4. Create `cdocs/reviews/YYYY-MM-DD_review_of_{doc_name}.md` using the template below.
-5. After writing the review, update the target document's `last_reviewed` frontmatter field.
-6. If `cdocs/reviews/` doesn't exist, suggest running `/cdocs:init` first.
+3. If it is a devlog, review the resulting code diffs and context as well.
+4. Determine today's date.
+5. Create `cdocs/reviews/YYYY-MM-DD_review_of_{doc_name}.md` using the template below.
+6. After writing the review, update the target document's `last_reviewed` frontmatter field.
+7. If `cdocs/reviews/` doesn't exist, suggest running `/cdocs:init` first.
 
 ## Template
 
@@ -31,13 +37,18 @@ Fill in:
 - `first_authored.at` with the current timestamp including timezone.
 - `task_list` with the relevant workstream path.
 - `type: review`, `state: live`, `status: wip` (set to `done` on completion).
-- Tags: always include one of `self`, `fresh` (self = same author, fresh = different author). Add `architecture`, `runtime_validated`, `ui_validated` as applicable.
+- Tags: describe aspects of the review, ie: `self` for self-review from same chat as work done, `fresh_agent` for the first pass review, `rereview_agent` for a follow-up from the same agent.
+  Should also have tags for topics that matter most in the review, ie `architecture`, `test_plan`, `missing_validation` - use judgement and aim for descriptive power, creating new tags as needed.
 
-## Required Sections
+## Sections
+
+All reviews should include a Summary Assessment and Verdict.
+Most reviews should include section-by-section findings and action items
+You may also include novel sections not specified - use your judgement and think critically about what best serves the review.
 
 ### Summary Assessment
 2-4 sentences covering:
-- What the document is trying to accomplish.
+- What the document or work is trying to accomplish.
 - Overall quality assessment.
 - The most important finding(s).
 - The verdict (see below).
@@ -53,9 +64,9 @@ For each finding:
 
 ### Verdict
 One of:
-- **Accept** -- Approve as-is. Minor non-blocking suggestions may be noted.
-- **Revise** -- Requires changes before acceptance. All blocking issues must be resolved. Specify what must change.
-- **Reject** -- Fundamentally flawed. Major rework or abandonment needed. Explain why.
+- **Accept:** Approve as-is. Minor non-blocking suggestions may be noted.
+- **Revise:** Requires changes before acceptance. All blocking issues should be resolved. Specify what must change.
+- **Reject:** Fundamentally flawed. Major rework or abandonment needed. Explain why.
 
 ### Action Items
 Numbered list of specific tasks:
@@ -71,9 +82,9 @@ Each action item should be specific enough to act on without re-reading the full
 ## Multi-Round Reviews
 
 For subsequent review rounds:
-- Read the previous review(s) to understand prior findings.
+- If you weren't the original reviewer, read the previous review(s) to understand prior findings.
 - Note which prior action items have been addressed.
-- Focus on changes since the last round and any new issues.
+- Focus on changes since the last round, but keep an eye out for any new issues or potential improvements.
 - Update the round number in the target's `last_reviewed.round`.
 - If all blocking issues are resolved, verdict should shift toward Accept.
 
@@ -99,8 +110,9 @@ Map verdict to status:
 - Reference specific sections/content, not vague impressions.
 - Explain the reasoning behind concerns.
 - Distinguish blocking from non-blocking issues.
-- Check for internal consistency across sections.
+- Check for internal consistency across sections and code.
 - Verify claims against available evidence.
 - Consider maintainability and future impact.
-- Suggest alternatives when rejecting approaches.
+- Suggest alternatives or follow-up research when rejecting approaches.
 - Be critical but constructive.
+- Follow our general rules on writing conventions.

@@ -47,13 +47,13 @@ claude --plugin-dir ~/.claude/cdocs-plugin
 
 Loaded automatically when the plugin is active:
 
-- **`writing-conventions.md`** -- BLUF, brevity, callout syntax, sentence-per-line, critical analysis.
-- **`workflow-patterns.md`** -- Parallel agent dispatch, subagent-driven development, completeness checklists.
-- **`frontmatter-spec.md`** -- YAML frontmatter field definitions and valid values (scoped to `cdocs/**/*.md`).
+- **`writing_conventions.md`:** BLUF, brevity, callout syntax, sentence-per-line, critical analysis.
+- **`workflow_patterns.md`:** Parallel agent dispatch, subagent-driven development, completeness checklists.
+- **`frontmatter_spec.md`:** YAML frontmatter field definitions and valid values (scoped to `cdocs/**/*.md`).
 
 ## Hooks
 
-- **PostToolUse (Write|Edit)** -- Validates frontmatter on cdocs files. Informational warnings only (non-blocking).
+- **PostToolUse (Write|Edit):** Validates frontmatter on cdocs files. Informational warnings only (non-blocking).
 
 ## Document Types
 

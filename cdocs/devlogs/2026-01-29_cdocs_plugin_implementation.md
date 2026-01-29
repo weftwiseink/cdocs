@@ -9,7 +9,7 @@ status: review_ready
 tags: [architecture, claude_skills, plugin, implementation]
 ---
 
-# CDocs Plugin Implementation -- Devlog
+# CDocs Plugin Implementation: Devlog
 
 ## Objective
 
@@ -31,9 +31,9 @@ Implement the CDocs Claude Code plugin as specified in `cdocs/proposals/2026-01-
 Created plugin manifest, 3 rule files, and init skill.
 
 **Rule extraction decisions:**
-- `writing-conventions.md`: Unscoped. Extracted BLUF, brevity, sentence-per-line, callout syntax, history-agnostic framing, commentary decoupling, critical analysis, devlog convention, emoji avoidance from CLAUDE.md.
-- `workflow-patterns.md`: Unscoped. Extracted parallel agent dispatch, subagent-driven development, completeness checklist from CLAUDE.md. Kept these general (not type-specific) per review feedback.
-- `frontmatter-spec.md`: Scoped to `cdocs/**/*.md`. Extracted full field definitions from `cdocs_plan.md`. Added per-type status values, file naming, media conventions.
+- `writing_conventions.md`: Unscoped. Extracted BLUF, brevity, sentence-per-line, callout syntax, history-agnostic framing, commentary decoupling, critical analysis, devlog convention, emoji avoidance from CLAUDE.md.
+- `workflow_patterns.md`: Unscoped. Extracted parallel agent dispatch, subagent-driven development, completeness checklist from CLAUDE.md. Kept these general (not type-specific) per review feedback.
+- `frontmatter_spec.md`: Scoped to `cdocs/**/*.md`. Extracted full field definitions from `cdocs_plan.md`. Added per-type status values, file naming, media conventions.
 
 **Init skill:** Generates lightweight READMEs in each subdir (format summary + skill reference) to preserve plugin-less discoverability. Supports `--minimal` flag for bare scaffolding.
 
@@ -42,7 +42,7 @@ Created plugin manifest, 3 rule files, and init skill.
 **Devlog skill (`skills/devlog/`):**
 - Marked as infrastructure skill (Claude auto-invokes when starting substantive work).
 - SKILL.md absorbs full README content: required sections, debugging phases 1-4, verification requirements, parallel agent documentation, best practices.
-- Removed Weft-specific references (Y.js, WebRTC, localhost:3000) from the README content -- kept debugging phases generic.
+- Removed Weft-specific references (Y.js, WebRTC, localhost:3000) from the README content - kept debugging phases generic.
 - Template provides frontmatter + minimal section scaffold.
 
 **Proposal skill (`skills/proposal/`):**
@@ -57,7 +57,7 @@ Researched best practices for document reviews and reports before building.
 
 **Review skill (`skills/review/`):**
 - Deliverable skill. Structure drawn from code review and architecture review processes.
-- Verdict taxonomy: accept, revise, reject. Kept simple -- extended categories (accept-with-conditions, defer, superseded) deferred as they add complexity without clear value yet.
+- Verdict taxonomy: accept, revise, reject. Kept simple - extended categories (accept-with-conditions, defer, superseded) deferred as they add complexity without clear value yet.
 - Multi-round review handling: subsequent rounds reference prior reviews, track resolution of action items, update round counter.
 - Action items use `[blocking]`/`[non-blocking]` prefix for clear prioritization.
 - "What Makes a Good Review" section: specific references, reasoning over impressions, alternatives when rejecting.
@@ -68,7 +68,7 @@ Researched best practices for document reviews and reports before building.
 - 5 subtypes identified: status, investigation, incident, audit, retrospective. Each has optional sections.
 - Decision: one template because subtypes share core structure (BLUF, findings, analysis, recommendations) and separate templates would proliferate without proportional value.
 - Explicit "Reports vs. Devlogs" comparison table to clarify when to use which.
-- Reports are audience-facing and conclusions-focused; devlogs are implementer-facing and process-focused.
+- Reports are audience-facing and conclusions-focused - devlogs are implementer-facing and process-focused.
 
 ### Phase 4: Management, Hooks, and Cleanup
 
@@ -80,7 +80,7 @@ Researched best practices for document reviews and reports before building.
 
 **Hooks:**
 - `hooks/hooks.json`: PostToolUse on Write|Edit, delegates to validation script.
-- `hooks/cdocs-validate-frontmatter.sh`: Bash script, depends on `jq` for JSON stdin parsing. Regex-based YAML field detection (no external YAML parser). Checks for `first_authored`, `type`, `state`, `status`. Non-blocking (exits 0 with additionalContext warning).
+- `hooks/cdocs_validate_frontmatter.sh`: Bash script, depends on `jq` for JSON stdin parsing. Regex-based YAML field detection (no external YAML parser). Checks for `first_authored`, `type`, `state`, `status`. Non-blocking (exits 0 with additionalContext warning).
 - Script uses `${CLAUDE_PLUGIN_ROOT}` for path resolution in hooks.json.
 
 **CLAUDE.md slimming:**
@@ -95,9 +95,9 @@ Researched best practices for document reviews and reports before building.
 | File | Description |
 |------|-------------|
 | `.claude-plugin/plugin.json` | Plugin manifest (v0.1.0) |
-| `rules/writing-conventions.md` | Writing conventions rule (unscoped) |
-| `rules/workflow-patterns.md` | Workflow patterns rule (unscoped) |
-| `rules/frontmatter-spec.md` | Frontmatter spec rule (scoped to cdocs/) |
+| `rules/writing_conventions.md` | Writing conventions rule (unscoped) |
+| `rules/workflow_patterns.md` | Workflow patterns rule (unscoped) |
+| `rules/frontmatter_spec.md` | Frontmatter spec rule (scoped to cdocs/) |
 | `skills/init/SKILL.md` | Init/scaffolding skill |
 | `skills/devlog/SKILL.md` | Devlog skill (infrastructure) |
 | `skills/devlog/template.md` | Devlog template |
@@ -109,7 +109,7 @@ Researched best practices for document reviews and reports before building.
 | `skills/report/template.md` | Report template |
 | `skills/status/SKILL.md` | Status/query skill (infrastructure) |
 | `hooks/hooks.json` | PostToolUse hook config |
-| `hooks/cdocs-validate-frontmatter.sh` | Frontmatter validation script |
+| `hooks/cdocs_validate_frontmatter.sh` | Frontmatter validation script |
 | `CLAUDE.md` | Slimmed (migrated content to rules/skills) |
 | `README.md` | Plugin documentation |
 
@@ -124,4 +124,4 @@ Researched best practices for document reviews and reports before building.
 
 > TODO(claude-opus-4-5/plugin_implementation): Original cdocs/devlogs/README.md and cdocs/proposals/README.md not yet removed.
 > The proposal calls for removing them (absorbed into skills), but the init skill also generates new READMEs.
-> Leaving removal for user decision -- they may want to keep the originals as development references for this repo.
+> Leaving removal for user decision - they may want to keep the originals as development references for this repo.
