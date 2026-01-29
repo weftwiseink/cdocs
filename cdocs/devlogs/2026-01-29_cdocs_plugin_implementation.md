@@ -36,3 +36,17 @@ Created plugin manifest, 3 rule files, and init skill.
 - `frontmatter-spec.md`: Scoped to `cdocs/**/*.md`. Extracted full field definitions from `cdocs_plan.md`. Added per-type status values, file naming, media conventions.
 
 **Init skill:** Generates lightweight READMEs in each subdir (format summary + skill reference) to preserve plugin-less discoverability. Supports `--minimal` flag for bare scaffolding.
+
+### Phase 2: Core Skills
+
+**Devlog skill (`skills/devlog/`):**
+- Marked as infrastructure skill (Claude auto-invokes when starting substantive work).
+- SKILL.md absorbs full README content: required sections, debugging phases 1-4, verification requirements, parallel agent documentation, best practices.
+- Removed Weft-specific references (Y.js, WebRTC, localhost:3000) from the README content -- kept debugging phases generic.
+- Template provides frontmatter + minimal section scaffold.
+
+**Proposal skill (`skills/proposal/`):**
+- Marked as deliverable skill (user explicitly requests).
+- SKILL.md absorbs full README content: required sections, implementation phase guidance (standard + subagent-driven), author checklist.
+- Added a "Drafting Approach" section with recommended authoring order (BLUF first, revisit at end).
+- Template provides frontmatter + all required section headers.
