@@ -5,7 +5,7 @@ first_authored:
 task_list: cdocs/plugin_architecture
 type: devlog
 state: live
-status: wip
+status: review_ready
 tags: [architecture, claude_skills, plugin, implementation]
 ---
 
@@ -69,3 +69,59 @@ Researched best practices for document reviews and reports before building.
 - Decision: one template because subtypes share core structure (BLUF, findings, analysis, recommendations) and separate templates would proliferate without proportional value.
 - Explicit "Reports vs. Devlogs" comparison table to clarify when to use which.
 - Reports are audience-facing and conclusions-focused; devlogs are implementer-facing and process-focused.
+
+### Phase 4: Management, Hooks, and Cleanup
+
+**Status skill (`skills/status/`):**
+- Infrastructure skill. Three invocation modes: list all, filter, update.
+- Filters: `--type`, `--state`, `--status`, `--tag` (AND-combined).
+- Update mode: specify file path + `--update field=value`.
+- Scaling note documented: practical up to ~100 docs, index file or MCP mitigation path for larger corpora.
+
+**Hooks:**
+- `hooks/hooks.json`: PostToolUse on Write|Edit, delegates to validation script.
+- `hooks/cdocs-validate-frontmatter.sh`: Bash script, depends on `jq` for JSON stdin parsing. Regex-based YAML field detection (no external YAML parser). Checks for `first_authored`, `type`, `state`, `status`. Non-blocking (exits 0 with additionalContext warning).
+- Script uses `${CLAUDE_PLUGIN_ROOT}` for path resolution in hooks.json.
+
+**CLAUDE.md slimming:**
+- Removed: Devlog Format, Documentation Updates, High-level Communication notes, Dispatching Parallel Agents, Subagent-Driven Development, Final Checklist Review, Guidelines.
+- Retained: conventional commit workflow, dedup guideline, devlog creation directive.
+- Added: references to plugin rules and skills via `@` import syntax.
+
+**README.md:** Plugin documentation with installation, quick start, skill table, rules, hooks, and document type summary.
+
+## Changes Made
+
+| File | Description |
+|------|-------------|
+| `.claude-plugin/plugin.json` | Plugin manifest (v0.1.0) |
+| `rules/writing-conventions.md` | Writing conventions rule (unscoped) |
+| `rules/workflow-patterns.md` | Workflow patterns rule (unscoped) |
+| `rules/frontmatter-spec.md` | Frontmatter spec rule (scoped to cdocs/) |
+| `skills/init/SKILL.md` | Init/scaffolding skill |
+| `skills/devlog/SKILL.md` | Devlog skill (infrastructure) |
+| `skills/devlog/template.md` | Devlog template |
+| `skills/proposal/SKILL.md` | Proposal skill (deliverable) |
+| `skills/proposal/template.md` | Proposal template |
+| `skills/review/SKILL.md` | Review skill (deliverable) |
+| `skills/review/template.md` | Review template |
+| `skills/report/SKILL.md` | Report skill (deliverable) |
+| `skills/report/template.md` | Report template |
+| `skills/status/SKILL.md` | Status/query skill (infrastructure) |
+| `hooks/hooks.json` | PostToolUse hook config |
+| `hooks/cdocs-validate-frontmatter.sh` | Frontmatter validation script |
+| `CLAUDE.md` | Slimmed (migrated content to rules/skills) |
+| `README.md` | Plugin documentation |
+
+## Verification
+
+- All 6 skills created with SKILL.md and templates (where applicable).
+- 3 rule files created with correct scoping (2 unscoped, 1 scoped to cdocs/).
+- Hook config references script via `${CLAUDE_PLUGIN_ROOT}`, script is executable.
+- CLAUDE.md slimmed to project-specific content + plugin references.
+- README documents installation, skills, rules, hooks, and doc types.
+- Plugin manifest valid JSON with name, description, version.
+
+> TODO(claude-opus-4-5/plugin_implementation): Original cdocs/devlogs/README.md and cdocs/proposals/README.md not yet removed.
+> The proposal calls for removing them (absorbed into skills), but the init skill also generates new READMEs.
+> Leaving removal for user decision -- they may want to keep the originals as development references for this repo.
