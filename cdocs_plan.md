@@ -4,8 +4,14 @@ CDocs is a doc structure and collection of claude skills for organizing work, re
 
 I've copied some markdown and structure from a project, and want to refine it into a full-fledged claude plugin.
 
-Please take the notes and markdown, and make a proposal for reworking them into skills, plugins, hooks as appropiate.
+Please take the structure and markdown in this repo, along with this plan/notes doc, and make a concrete proposal for reworking them into skills, plugins, hooks as appropiate.
+Note that not everything has to be sorted by the proposal, but it should lay out a sufficiently detailed layout and plan of attack for researching & completing the necessary elements for our plugin.
+
 The proposal should specify what claude "tasks" you recommend we create as well.
+
+Note that there is likely unaccounted for process-level conventions I've been using, like template prompts for proposals and reviews.
+We'll want to take note of them for expansion later.
+
 
 
 ## general directives
@@ -53,6 +59,8 @@ More details on the above fields:
    - by, at: same as in first_authored
    - how many rounds of review have occurred
 8. tags: limited freeform set of the most relevant topics the doc concerns.
+   - reviews should use tags like `self`, `fresh`, `runtime_validated`, `ui_validated`, `architecture`
+   - proposals might get spun off as `future_work` `state:deferred`
 
 ### filenaming
 Always use `{date}_{snake_case}.md` names as specified elsewhere for each file type.
@@ -78,3 +86,5 @@ For types we don't have detailed specs for yet like reviews and reports, the (su
 4. we'll want a skill for setting up the scaffolding for cdocs in a repo, and updating the CLAUDE.md with stuff that doesn't make sense to be tucked in a skill 
 
 We might want to turn the repo into a claude plugin marketplace rather than a single plugin, not sure. Can figure out later.
+
+We also might want a way of quickly adding to the metadata or taxonomy of our system, of overlaying a new convention over the plugin for experimentation then later integration, etc
