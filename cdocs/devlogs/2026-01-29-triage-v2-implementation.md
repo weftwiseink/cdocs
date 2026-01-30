@@ -35,15 +35,43 @@ Phase 0 (platform validation) is already complete per the Phase 0 devlog.
 
 ## Implementation Notes
 
-### Phase 1
+### Phase 1: Triage agent + dispatcher refactor
 
-(In progress)
+Created `plugins/cdocs/agents/triage.md` with haiku model and `tools: Read, Glob, Grep, Edit`.
+The agent prompt instructs reading `frontmatter-spec.md` at runtime, applying mechanical fixes directly via Edit, and returning a structured triage report with status/workflow recommendations.
+
+Refactored `skills/triage/SKILL.md` from an embedded prompt template to a thin dispatcher.
+The skill now instructs the main agent to invoke the triage agent via `subagent_type: "triage"`, verify changes post-triage, apply status recommendations, and route workflow actions.
+
+> NOTE(opus/cdocs/haiku-subagent): The v1 prompt template (read-only haiku subagent with inlined analysis logic) is fully replaced.
+> The agent definition owns the analysis prompt; the skill owns orchestration.
+
+### Phase 2: Reviewer agent
+
+Created `plugins/cdocs/agents/reviewer.md` with sonnet model and `tools: Read, Glob, Grep, Edit, Write`.
+Uses `skills: [cdocs:review]` to preload review methodology at startup.
+Agent prompt instructs reading `frontmatter-spec.md` and `writing-conventions.md` at runtime.
+
+### Phase 3: Review dispatch wiring
+
+> NOTE(opus/cdocs/haiku-subagent): Phase 3 was effectively completed during Phase 1.
+> The dispatcher rewrite included the full v2 dispatch table (`[REVIEW]` -> `subagent_type: "reviewer"`, re-triage step, user verdict reporting) from the start rather than incrementally adding it.
+> No separate commit needed.
+
+### Phase 4: Documentation and cleanup
+
+Updated `rules/workflow-patterns.md` to reflect agent-based architecture: triage agent applies fixes directly, dispatcher routes workflow actions, reviewer agent is a formal subagent with preloaded skills.
 
 ## Changes Made
 
 | File | Description |
 |------|-------------|
+| `plugins/cdocs/agents/triage.md` | New: triage agent definition (haiku, Read/Glob/Grep/Edit) |
+| `plugins/cdocs/agents/reviewer.md` | New: reviewer agent definition (sonnet, Read/Glob/Grep/Edit/Write, skills: cdocs:review) |
+| `plugins/cdocs/skills/triage/SKILL.md` | Refactored: embedded prompt template -> thin dispatcher |
+| `plugins/cdocs/rules/workflow-patterns.md` | Updated: reflects agent-based triage architecture |
+| `cdocs/proposals/2026-01-29-triage-v2-agents-and-automation.md` | Status: review_ready -> implementation_wip |
 
 ## Verification
 
-(Pending)
+(Pending: plugin validation passed, runtime testing needed)

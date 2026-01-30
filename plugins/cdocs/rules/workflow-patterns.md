@@ -58,16 +58,22 @@ After completing substantive work on cdocs documents, invoke `/cdocs:triage` to 
 - No cdocs files were touched
 
 **How it works:**
-1. The top-level agent spawns a haiku Task subagent with the list of modified cdocs file paths.
-2. The haiku agent reads each file (read-only) and returns recommendations for frontmatter fixes (tags, timestamps, missing fields), status transitions, and workflow actions.
-3. The top-level agent reviews the triage report, applies recommended edits, and dispatches workflow actions:
-   - `[REVIEW]`: spawn an opus/sonnet review subagent.
+1. The top-level agent invokes the triage agent via Task tool (`subagent_type: "triage"`) with the list of modified cdocs file paths.
+2. The triage agent (haiku, tools: Read/Glob/Grep/Edit) reads each file, applies mechanical frontmatter fixes directly (tags, timestamps, missing fields), and returns a report with status and workflow recommendations.
+3. The top-level agent verifies changes, applies status recommendations, and dispatches workflow actions:
+   - `[REVIEW]`: invoke the reviewer agent (`subagent_type: "reviewer"`).
    - `[REVISE]`: revise inline per review action items.
    - `[ESCALATE]`: present options to the user (round >= 3 without acceptance).
    - `[STATUS]`: apply frontmatter status update.
    - `[NONE]`: no action needed.
+4. After review completes, re-triage the review document to validate its frontmatter.
 
-**Design rationale:** Haiku is used for triage because the work is mechanical (frontmatter checks, pattern matching). Reviews use opus/sonnet because they require critical analysis. Revisions stay with the top-level agent because it has authoring context. See `/cdocs:triage` skill for full details.
+**Architecture:** Two formal agents in `plugins/cdocs/agents/`:
+- **triage** (haiku): mechanical frontmatter analysis and fixes. Infrastructure-enforced tool allowlist (no Write/Bash).
+- **reviewer** (sonnet): structured document reviews. Preloads the review skill via `skills: [cdocs:review]`, reads rules at runtime.
+
+The triage skill (`/cdocs:triage`) is a thin dispatcher: it owns orchestration (when to invoke, how to route), agents own their prompts (what to analyze, how to fix/review).
+See `/cdocs:triage` skill for full dispatch details.
 
 ## Completeness and Clarity Checklist
 
