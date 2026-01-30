@@ -43,6 +43,32 @@ Use for structured execution of complex implementation plans with 5+ tasks.
 - Document high-level technical decisions in devlog
 - Capture emergent issues that required deviation from plan
 
+## End-of-Turn Triage
+
+After completing substantive work on cdocs documents, invoke `/cdocs:triage` to maintain frontmatter accuracy and trigger workflow continuations.
+
+**Invoke when:**
+- A new cdocs document was created (devlog, proposal, review, report)
+- Significant edits were made to an existing cdocs document
+- A revision cycle was completed
+
+**Don't invoke when:**
+- Only trivial edits were made (typos, formatting)
+- Still mid-authoring (document not yet complete for this turn)
+- No cdocs files were touched
+
+**How it works:**
+1. The top-level agent spawns a haiku Task subagent with the list of modified cdocs file paths.
+2. The haiku agent reads each file, applies confident mechanical edits (tags, timestamps, missing fields), and returns recommendations for status transitions and workflow actions.
+3. The top-level agent reviews the triage report and dispatches recommended actions:
+   - `[REVIEW]`: spawn an opus/sonnet review subagent.
+   - `[REVISE]`: revise inline per review action items.
+   - `[ESCALATE]`: present options to the user (round >= 3 without acceptance).
+   - `[STATUS]`: apply frontmatter status update.
+   - `[NONE]`: no action needed.
+
+**Design rationale:** Haiku is used for triage because the work is mechanical (frontmatter checks, pattern matching). Reviews use opus/sonnet because they require critical analysis. Revisions stay with the top-level agent because it has authoring context. See `/cdocs:triage` skill for full details.
+
 ## Completeness and Clarity Checklist
 
 Before completing any task, review:
