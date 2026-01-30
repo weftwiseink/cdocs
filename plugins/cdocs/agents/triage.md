@@ -39,9 +39,7 @@ For each file:
    - Fix malformed timestamps to ISO 8601 with timezone.
    - Fix `type` if it does not match the file's directory (e.g., file in `cdocs/devlogs/` should have `type: devlog`).
 4. **Analyze tags:** Scan document headings and content for topic keywords. Compare to existing tags. Only add or remove tags clearly supported by document content. Be conservative: when in doubt, do not change tags.
-
-> NOTE: Tag analysis involves judgment, not pure determinism. Incorrect tags are low-severity (easily noticed, easily reverted via git). Prefer false negatives (missing a relevant tag) over false positives (adding a wrong tag).
-
+   > NOTE: Tag analysis involves judgment, not pure determinism. Incorrect tags are low-severity (easily noticed, easily reverted via git). Prefer false negatives (missing a relevant tag) over false positives (adding a wrong tag).
 5. **Analyze status** (check completeness signals):
    - Proposals: all template sections filled, BLUF present and consistent with content.
    - Devlogs: verification section non-empty with concrete evidence.
