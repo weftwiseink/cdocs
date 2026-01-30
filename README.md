@@ -47,9 +47,9 @@ Devlogs are most commonly auto-invoked; proposals, reviews, and reports are typi
 
 Loaded automatically when the plugin is active:
 
-- **`writing_conventions.md`:** BLUF, brevity, callout syntax, sentence-per-line, critical analysis.
-- **`workflow_patterns.md`:** Parallel agent dispatch, subagent-driven development, completeness checklists.
-- **`frontmatter_spec.md`:** YAML frontmatter field definitions and valid values (scoped to `cdocs/**/*.md`).
+- **`writing-conventions.md`:** BLUF, brevity, callout syntax, sentence-per-line, critical analysis.
+- **`workflow-patterns.md`:** Parallel agent dispatch, subagent-driven development, completeness checklists.
+- **`frontmatter-spec.md`:** YAML frontmatter field definitions and valid values (scoped to `cdocs/**/*.md`).
 
 ## Hooks
 
@@ -64,7 +64,7 @@ Loaded automatically when the plugin is active:
 | Review | `cdocs/reviews/` | Structured document reviews with verdicts |
 | Report | `cdocs/reports/` | Audience-facing findings and analysis |
 
-All documents use `YYYY-MM-DD_snake_case.md` naming and require YAML frontmatter.
+All documents use `YYYY-MM-DD-dash-case.md` naming and require YAML frontmatter.
 
 ## License
 

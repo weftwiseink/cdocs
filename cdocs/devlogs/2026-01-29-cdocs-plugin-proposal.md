@@ -2,7 +2,7 @@
 first_authored:
   by: "@claude-opus-4-5-20251101"
   at: 2026-01-29T12:00:00-08:00
-task_list: cdocs/plugin_architecture
+task_list: cdocs/plugin-architecture
 type: devlog
 state: live
 status: done
@@ -13,11 +13,11 @@ tags: [architecture, claude_skills, plugin, proposal]
 
 ## Objective
 
-Author the foundational proposal for reworking the CDocs repo into a Claude Code plugin, as requested in `cdocs_plan.md`.
+Author the foundational proposal for reworking the CDocs repo into a Claude Code plugin, as requested in `cdocs-plan.md`.
 
 ## Plan
 
-1. Read all repo content (CLAUDE.md, cdocs_plan.md, devlogs/README.md, proposals/README.md).
+1. Read all repo content (CLAUDE.md, cdocs-plan.md, devlogs/README.md, proposals/README.md).
 2. Research Claude Code extension mechanisms (plugins, skills, hooks, rules, MCP).
 3. Design the plugin architecture mapping current content to plugin components.
 4. Write the proposal following `cdocs/proposals/README.md` format.
@@ -68,18 +68,18 @@ Fresh-eyes review surfaced 9 action items. Key issues:
 4. **README removal loses plugin-less fallback.** Without READMEs, `cdocs/` is opaque to non-plugin users and GitHub readers.
 5. **10 phases over-decomposed** for what is primarily markdown authoring. 4 phases is more honest.
 
-Full review: `cdocs/reviews/2026-01-29_review_of_cdocs_plugin_architecture.md`
+Full review: `cdocs/reviews/2026-01-29-review-of-cdocs-plugin-architecture.md`
 
 ### Revision applied (round 1)
 
 All 9 action items addressed in proposal rewrite:
 - Skills split into deliverable vs. infrastructure categories - devlog reclassified as infrastructure (auto-invoked).
-- CLAUDE.md migration table corrected: parallel agents, subagent dev, checklists -> `rules/workflow_patterns.md` (new rule file).
+- CLAUDE.md migration table corrected: parallel agents, subagent dev, checklists -> `rules/workflow-patterns.md` (new rule file).
 - Distribution/installation section added (git clone + `--plugin-dir`, vendor option).
 - Init skill generates lightweight fallback READMEs for plugin-less discoverability.
 - Status skill scaling acknowledged (~100 doc limit, index file mitigation path).
 - Hook script path uses `${CLAUDE_PLUGIN_ROOT}`, bash regex-based implementation specified.
-- Rules scoping explicit: writing_conventions and workflow_patterns unscoped, frontmatter_spec scoped to `cdocs/**/*.md`.
+- Rules scoping explicit: writing-conventions and workflow-patterns unscoped, frontmatter-spec scoped to `cdocs/**/*.md`.
 - Phases consolidated from 10 to 4.
 - Plugin dogfooding and rule precedence explanations added to edge cases.
 
@@ -87,14 +87,14 @@ All 9 action items addressed in proposal rewrite:
 
 | File | Description |
 |------|-------------|
-| `cdocs/proposals/2026-01-29_cdocs_plugin_architecture.md` | Proposal (revised): 6 skills in 2 categories, 3 rules, hooks, 4 phases |
-| `cdocs/reviews/2026-01-29_review_of_cdocs_plugin_architecture.md` | Self-review with 9 action items, verdict: revise |
-| `cdocs/devlogs/2026-01-29_cdocs_plugin_proposal.md` | This devlog |
+| `cdocs/proposals/2026-01-29-cdocs-plugin-architecture.md` | Proposal (revised): 6 skills in 2 categories, 3 rules, hooks, 4 phases |
+| `cdocs/reviews/2026-01-29-review-of-cdocs-plugin-architecture.md` | Self-review with 9 action items, verdict: revise |
+| `cdocs/devlogs/2026-01-29-cdocs-plugin-proposal.md` | This devlog |
 
 ## Verification
 
 - Proposal follows required sections from `cdocs/proposals/README.md` (BLUF, objective, background, proposed solution, design decisions, edge cases, test plan, implementation phases).
-- Frontmatter follows spec from `cdocs_plan.md`.
-- All items from `cdocs_plan.md` addressed: skills, hooks, rules, CLI/status, scaffolding, marketplace (deferred), writing conventions, formatting automation (deferred), reviews/reports (research flagged).
+- Frontmatter follows spec from `cdocs-plan.md`.
+- All items from `cdocs-plan.md` addressed: skills, hooks, rules, CLI/status, scaffolding, marketplace (deferred), writing conventions, formatting automation (deferred), reviews/reports (research flagged).
 - Author checklist reviewed: BLUF matches settled approach, sources cited, decisions explain "why", NOTE callouts on uncertain areas (review/report structure).
 - Self-review completed with revision_requested verdict. All 9 action items resolved in revision.

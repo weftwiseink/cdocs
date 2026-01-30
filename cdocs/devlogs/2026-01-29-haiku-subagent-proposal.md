@@ -2,7 +2,7 @@
 first_authored:
   by: "@claude-opus-4-5-20251101"
   at: 2026-01-29T12:00:00-08:00
-task_list: cdocs/haiku_subagent
+task_list: cdocs/haiku-subagent
 type: devlog
 state: live
 status: done
@@ -107,15 +107,15 @@ The `/cdoc:implement` skill lists `implementation_ready` proposals and primes th
 
 | File | Description |
 |------|-------------|
-| `cdocs/proposals/2026-01-29_haiku_subagent_workflow_automation.md` | Proposal document |
-| `cdocs/devlogs/2026-01-29_haiku_subagent_proposal.md` | This devlog |
-| `cdocs/reviews/2026-01-29_review_of_haiku_subagent_workflow_automation.md` | Review by opus subagent |
+| `cdocs/proposals/2026-01-29-haiku-subagent-workflow-automation.md` | Proposal document |
+| `cdocs/devlogs/2026-01-29-haiku-subagent-proposal.md` | This devlog |
+| `cdocs/reviews/2026-01-29-review-of-haiku-subagent-workflow-automation.md` | Review by opus subagent |
 | `skills/implement/SKILL.md` | New implement skill |
-| `rules/frontmatter_spec.md` | Added `implementation_ready`, `request_for_proposal`, `implementation_accepted` statuses |
-| `rules/writing_conventions.md` | Added mermaid over ASCII convention |
+| `rules/frontmatter-spec.md` | Added `implementation_ready`, `request_for_proposal`, `implementation_accepted` statuses |
+| `rules/writing-conventions.md` | Added mermaid over ASCII convention |
 | `skills/status/SKILL.md` | Updated status filter values |
-| `cdocs_plan.md` | Updated status vocabulary |
-| `cdocs/proposals/2026-01-29_nit_fix_skill.md` | RFP stub for nit_fix skill |
+| `cdocs-plan.md` | Updated status vocabulary |
+| `cdocs/proposals/2026-01-29-nit-fix-skill.md` | RFP stub for nit_fix skill |
 
 ## Verification
 

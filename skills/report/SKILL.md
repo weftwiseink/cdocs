@@ -26,7 +26,7 @@ They differ from devlogs: reports answer "what did we learn/accomplish?" while d
 1. If `$ARGUMENTS` provides a topic, use it. Otherwise, prompt the user.
 2. Determine the report subtype (see below). If ambiguous, ask the user.
 3. Determine today's date.
-4. Create `cdocs/reports/YYYY-MM-DD_topic.md` using the template below.
+4. Create `cdocs/reports/YYYY-MM-DD-topic.md` using the template below.
 5. If `cdocs/reports/` doesn't exist, suggest running `/cdoc:init` first.
 
 ## Template

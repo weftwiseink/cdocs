@@ -1,9 +1,9 @@
 ---
-review_of: cdocs/proposals/2026-01-29_haiku_subagent_workflow_automation.md
+review_of: cdocs/proposals/2026-01-29-haiku-subagent-workflow-automation.md
 first_authored:
   by: "@claude-opus-4-5-20251101"
   at: 2026-01-29T13:00:00-08:00
-task_list: cdocs/haiku_subagent
+task_list: cdocs/haiku-subagent
 type: review
 state: live
 status: done

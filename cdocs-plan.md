@@ -21,7 +21,7 @@ Every cdoc should have have frontmatter with the following fields:
 
 ```yaml
 ---
-review_of?: cdocs/.../2026-01-29_doc_name.md
+review_of?: cdocs/.../2026-01-29-doc-name.md
 first_authored:
   by: @claude-opus-4-5-20251101
   at: 2026-01-29T08:00:00-08:00
@@ -64,7 +64,7 @@ More details on the above fields:
    - proposals might get spun off as `future_work` `state:deferred`
 
 ### filenaming
-Always use `{date}_{snake_case}.md` names as specified elsewhere for each file type.
+Always use `{date}-{dash-case}.md` names as specified elsewhere for each file type.
 
 ### media
 media should always be dated, saved to `cdocs/_media`, and embedded into the relevant doc.

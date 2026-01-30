@@ -12,11 +12,11 @@ This spec defines the fields, their types, and valid values.
 
 ```yaml
 ---
-review_of?: cdocs/.../YYYY-MM-DD_doc_name.md   # reviews only
+review_of?: cdocs/.../YYYY-MM-DD-doc-name.md   # reviews only
 first_authored:
   by: "@claude-opus-4-5-20251101"                  # or "@username"
   at: 2026-01-29T08:00:00-08:00                    # ISO 8601 with TZ
-task_list: workstream/task_name
+task_list: workstream/task-name
 type: devlog | proposal | review | report
 state: live | deferred | archived
 status: wip                                        # see per-type values below
@@ -41,7 +41,7 @@ Only present on review-type documents.
 
 ### `task_list` (required)
 Claude task list tracking for a constrained/inter-related arc of work.
-Use `/` namespacing to capture workstream hierarchy: `organization/initial_scaffolding`, `cdocs/plugin_architecture/core_skills`.
+Use `/` namespacing to capture workstream hierarchy: `organization/initial-scaffolding`, `cdocs/plugin-architecture/core-skills`.
 
 ### `type` (required)
 Corresponds to subdirectory under `cdocs/`:
@@ -84,12 +84,12 @@ Limited freeform set of the most relevant topics.
 
 ## File Naming
 
-All cdocs use `{YYYY-MM-DD}_{snake_case}.md` format.
+All cdocs use `{YYYY-MM-DD}-{dash-case}.md` format.
 Examples:
-- `2026-01-29_cdocs_plugin_architecture.md`
-- `2026-01-29_review_of_cdocs_plugin_architecture.md`
+- `2026-01-29-cdocs-plugin-architecture.md`
+- `2026-01-29-review-of-cdocs-plugin-architecture.md`
 
 ## Media
 
 Media files are dated, saved to `cdocs/_media/`, and embedded into the relevant doc.
-Format: `YYYY-MM-DD_description.ext`
+Format: `YYYY-MM-DD-description.ext`

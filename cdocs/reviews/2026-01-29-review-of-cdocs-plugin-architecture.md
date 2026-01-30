@@ -1,9 +1,9 @@
 ---
-review_of: cdocs/proposals/2026-01-29_cdocs_plugin_architecture.md
+review_of: cdocs/proposals/2026-01-29-cdocs-plugin-architecture.md
 first_authored:
   by: "@claude-opus-4-5-20251101"
   at: 2026-01-29T12:30:00-08:00
-task_list: cdocs/plugin_architecture
+task_list: cdocs/plugin-architecture
 type: review
 state: live
 status: revision_requested
@@ -93,23 +93,23 @@ The proposal should acknowledge this scaling limitation and either:
 
 ### Hook script: missing implementation details
 
-The proposal references `cdocs_validate_frontmatter.sh` but doesn't address:
+The proposal references `cdocs-validate-frontmatter.sh` but doesn't address:
 - Where the script lives in the plugin directory (presumably `hooks/`).
-- How the hook command resolves the script path (needs `${CLAUDE_PLUGIN_ROOT}/hooks/cdocs_validate_frontmatter.sh`).
+- How the hook command resolves the script path (needs `${CLAUDE_PLUGIN_ROOT}/hooks/cdocs-validate-frontmatter.sh`).
 - What the script's dependencies are (parsing YAML in bash is non-trivial - does it shell out to Python/Node?).
 - Whether the script is executable and has a shebang.
 
 For a distributable plugin, the hook command should use `${CLAUDE_PLUGIN_ROOT}`:
 ```json
-"command": "${CLAUDE_PLUGIN_ROOT}/hooks/cdocs_validate_frontmatter.sh"
+"command": "${CLAUDE_PLUGIN_ROOT}/hooks/cdocs-validate-frontmatter.sh"
 ```
 
 ### Rules scoping: unspecified
 
 The proposal mentions rules should have "appropriate `paths` frontmatter for scoping" (Phase 2) but doesn't specify what that scoping is.
 This matters because:
-- `writing_conventions.md` should apply broadly (all files, all communication) - probably **no path restriction**.
-- `frontmatter_spec.md` should arguably only apply when working on cdocs files: `paths: ["cdocs/**/*.md"]`.
+- `writing-conventions.md` should apply broadly (all files, all communication) - probably **no path restriction**.
+- `frontmatter-spec.md` should arguably only apply when working on cdocs files: `paths: ["cdocs/**/*.md"]`.
 
 If both are unscoped, the frontmatter spec pollutes Claude's context when working on non-cdocs files.
 If the writing conventions are scoped to cdocs, they don't influence general communication.

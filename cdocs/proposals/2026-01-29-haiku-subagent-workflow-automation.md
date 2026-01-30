@@ -7,7 +7,7 @@ last_reviewed:
   by: "@claude-opus-4-5-20251101"
   at: 2026-01-29T13:00:00-08:00
   round: 2
-task_list: cdocs/haiku_subagent
+task_list: cdocs/haiku-subagent
 type: proposal
 state: live
 status: implementation_ready
@@ -19,7 +19,7 @@ tags: [architecture, workflow_automation, claude_skills, subagent_patterns]
 > BLUF(mjr/cdocs/haiku-subagent): Add a lightweight haiku subagent as an end-of-turn triage step that maintains cdocs frontmatter/tags and recommends workflow continuations (auto-review, auto-revision).
 > Triage applies confident frontmatter edits directly (tags, timestamps) and reports them to the caller alongside recommendations for changes requiring judgment (status transitions, workflow actions).
 > The top-level agent reviews the report, acts on recommendations, and dispatches workflow actions (opus for reviews, inline for revisions).
-> The approach is a new `/cdoc:triage` skill backed by a haiku-model Task subagent, codified as a workflow pattern in `rules/workflow_patterns.md`.
+> The approach is a new `/cdoc:triage` skill backed by a haiku-model Task subagent, codified as a workflow pattern in `rules/workflow-patterns.md`.
 
 ## Objective
 
@@ -35,10 +35,10 @@ This proposal explores adding a lightweight haiku-model subagent that runs at th
 
 ### Current state
 
-- **Frontmatter spec** (`rules/frontmatter_spec.md`): defines required fields, valid values, status transitions.
-- **PostToolUse hook** (`hooks/cdocs_validate_frontmatter.sh`): validates field presence after Write/Edit, but only checks existence, not semantic correctness.
+- **Frontmatter spec** (`rules/frontmatter-spec.md`): defines required fields, valid values, status transitions.
+- **PostToolUse hook** (`hooks/cdocs-validate-frontmatter.sh`): validates field presence after Write/Edit, but only checks existence, not semantic correctness.
 - **Skills**: devlog, propose, review, report, status, init. Each operates independently.
-- **Workflow patterns** (`rules/workflow_patterns.md`): parallel agents and subagent-driven development patterns. No end-of-turn triage pattern exists.
+- **Workflow patterns** (`rules/workflow-patterns.md`): parallel agents and subagent-driven development patterns. No end-of-turn triage pattern exists.
 
 ### What's missing
 
@@ -103,22 +103,22 @@ TRIAGE REPORT
 Files triaged: N
 
 CHANGES APPLIED:
-- cdocs/proposals/2026-01-29_foo.md:
+- cdocs/proposals/2026-01-29-foo.md:
   tags: added [hooks, workflow], removed [future_work]
-- cdocs/devlogs/2026-01-29_bar.md:
+- cdocs/devlogs/2026-01-29-bar.md:
   no changes needed
 
 RECOMMENDATIONS:
-- cdocs/proposals/2026-01-29_foo.md:
+- cdocs/proposals/2026-01-29-foo.md:
   status: recommend wip -> review_ready (all sections filled, BLUF present)
-- cdocs/devlogs/2026-01-29_bar.md:
+- cdocs/devlogs/2026-01-29-bar.md:
   status: no change (verification section empty)
 
 WORKFLOW RECOMMENDATIONS:
-- [REVIEW] cdocs/proposals/2026-01-29_foo.md is review_ready. Recommend: spawn opus review subagent.
-- [REVISE] cdocs/proposals/2026-01-28_bar.md has revision_requested (round 1). Recommend: top-level agent revises inline.
-- [ESCALATE] cdocs/proposals/2026-01-27_baz.md has revision_requested (round 3). Recommend: escalate to user.
-- [NONE] cdocs/devlogs/2026-01-29_qux.md: no action needed.
+- [REVIEW] cdocs/proposals/2026-01-29-foo.md is review_ready. Recommend: spawn opus review subagent.
+- [REVISE] cdocs/proposals/2026-01-28-bar.md has revision_requested (round 1). Recommend: top-level agent revises inline.
+- [ESCALATE] cdocs/proposals/2026-01-27-baz.md has revision_requested (round 3). Recommend: escalate to user.
+- [NONE] cdocs/devlogs/2026-01-29-qux.md: no action needed.
 ```
 
 ### Workflow continuations
@@ -159,7 +159,7 @@ A practical heuristic: if the revision is the third or later major task in a ses
 
 ### Decision 1: Skill vs. rule vs. hook for the triage pattern
 
-**Decision:** New `/cdoc:triage` skill + workflow pattern in `rules/workflow_patterns.md`.
+**Decision:** New `/cdoc:triage` skill + workflow pattern in `rules/workflow-patterns.md`.
 
 **Why:** Hooks cannot spawn agents (shell-only).
 A rule alone is advisory and easily forgotten.
@@ -326,7 +326,7 @@ The Task tool's model parameter works correctly: haiku subagents can read files,
 ### Phase 1: Triage skill and workflow pattern
 
 1. Create `skills/triage/SKILL.md` with the haiku subagent prompt template (Appendix A).
-2. Add "End-of-Turn Triage" section to `rules/workflow_patterns.md`.
+2. Add "End-of-Turn Triage" section to `rules/workflow-patterns.md`.
 3. The skill instructs the top-level agent to spawn a haiku Task subagent with:
    - The list of modified cdocs file paths.
    - The prompt template from Appendix A.

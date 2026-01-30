@@ -1,7 +1,7 @@
 ---
 name: devlog
 description: Create and scaffold a development log for the current work session
-argument-hint: "[feature_name]"
+argument-hint: "[feature-name]"
 ---
 
 # CDocs Devlog
@@ -16,7 +16,7 @@ Model auto-invocation is the most common entry point.
 
 1. If `$ARGUMENTS` provides a feature name, use it. Otherwise, infer from context or prompt the user.
 2. Determine today's date.
-3. Create `cdocs/devlogs/YYYY-MM-DD_feature_name.md` using the template below.
+3. Create `cdocs/devlogs/YYYY-MM-DD-feature-name.md` using the template below.
 4. If `cdocs/devlogs/` doesn't exist, suggest running `/cdoc:init` first.
 
 ## Template
@@ -44,7 +44,7 @@ You should also include novel sections as is appropriate/useful for your work.
 - **Debugging Process:** Systematic debugging using the 4-phase approach below.
 - **Changes Made:** Table of files modified/created with brief descriptions.
 - **Testing:** Build verification and test results.
-- **Screenshots:** Visual changes with captions. Save to `cdocs/_media/YYYY-MM-DD_description.png`.
+- **Screenshots:** Visual changes with captions. Save to `cdocs/_media/YYYY-MM-DD-description.png`.
 - **Documentation Updated:** Checklist of docs changed.
 - **Verification:** Fresh evidence of completion. No completion claims without pasted evidence.
 

@@ -38,7 +38,7 @@ Scaffold the CDocs documentation structure in the current project.
 Detailed logs of development work.
 See `/cdoc:devlog` for complete authoring guidelines.
 
-**Naming:** `YYYY-MM-DD_feature_name.md`
+**Naming:** `YYYY-MM-DD-feature-name.md`
 
 **Key sections:** Objective, Plan, Implementation Notes, Changes Made, Verification.
 ```
@@ -50,7 +50,7 @@ See `/cdoc:devlog` for complete authoring guidelines.
 Design and solution proposals.
 See `/cdoc:propose` for complete authoring guidelines.
 
-**Naming:** `YYYY-MM-DD_topic.md`
+**Naming:** `YYYY-MM-DD-topic.md`
 
 **Key sections:** BLUF, Objective, Background, Proposed Solution, Design Decisions, Edge Cases, Phases.
 ```
@@ -62,7 +62,7 @@ See `/cdoc:propose` for complete authoring guidelines.
 Document reviews with structured findings and verdicts.
 See `/cdoc:review` for complete authoring guidelines.
 
-**Naming:** `YYYY-MM-DD_review_of_{doc_name}.md`
+**Naming:** `YYYY-MM-DD-review-of-{doc-name}.md`
 
 **Key sections:** Summary Assessment, Section-by-Section Findings, Verdict, Action Items.
 ```
@@ -74,7 +74,7 @@ See `/cdoc:review` for complete authoring guidelines.
 Findings, status updates, and analysis.
 See `/cdoc:report` for complete authoring guidelines.
 
-**Naming:** `YYYY-MM-DD_topic.md`
+**Naming:** `YYYY-MM-DD-topic.md`
 
 **Key sections:** BLUF, Context/Background, Key Findings, Analysis, Recommendations.
 ```

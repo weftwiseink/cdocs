@@ -30,8 +30,8 @@ Apply filters to narrow the results. Multiple filters are AND-combined.
 
 ### Update a document's metadata
 ```
-/cdoc:status cdocs/proposals/2026-01-29_topic.md --update status=review_ready
-/cdoc:status cdocs/proposals/2026-01-29_topic.md --update state=archived
+/cdoc:status cdocs/proposals/2026-01-29-topic.md --update status=review_ready
+/cdoc:status cdocs/proposals/2026-01-29-topic.md --update state=archived
 ```
 Update a specific document's frontmatter field.
 
@@ -46,9 +46,9 @@ Update a specific document's frontmatter field.
 ```
 | File                                    | Type     | State | Status       | Tags                    |
 |-----------------------------------------|----------|-------|--------------|-------------------------|
-| devlogs/2026-01-29_plugin_impl.md       | devlog   | live  | wip          | architecture, plugin    |
-| proposals/2026-01-29_plugin_arch.md     | proposal | live  | review_ready | architecture, plugin    |
-| reviews/2026-01-29_review_plugin.md     | review   | live  | done         | self, architecture      |
+| devlogs/2026-01-29-plugin-impl.md       | devlog   | live  | wip          | architecture, plugin    |
+| proposals/2026-01-29-plugin-arch.md     | proposal | live  | review_ready | architecture, plugin    |
+| reviews/2026-01-29-review-plugin.md     | review   | live  | done         | self, architecture      |
 ```
 
 5. Apply filters from `$ARGUMENTS` if present.

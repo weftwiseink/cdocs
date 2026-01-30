@@ -17,12 +17,12 @@ Reviews evaluate a document's quality, correctness, and completeness, producing 
 
 ## Invocation
 
-1. `$ARGUMENTS` must provide the path to the document to review (e.g., `cdocs/proposals/2026-01-29_topic.md`).
+1. `$ARGUMENTS` must provide the path to the document to review (e.g., `cdocs/proposals/2026-01-29-topic.md`).
    If missing, prompt the user for the path from a picker of recently edited plausible `cdocs/`.
 2. Read the target document fully.
 3. If it is a devlog, review the resulting code diffs and context as well.
 4. Determine today's date.
-5. Create `cdocs/reviews/YYYY-MM-DD_review_of_{doc_name}.md` using the template below.
+5. Create `cdocs/reviews/YYYY-MM-DD-review-of-{doc-name}.md` using the template below.
 6. After writing the review, update the target document's `last_reviewed` frontmatter field.
 7. If `cdocs/reviews/` doesn't exist, suggest running `/cdoc:init` first.
 

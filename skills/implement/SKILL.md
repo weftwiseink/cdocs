@@ -15,7 +15,7 @@ Claude may also suggest implementation when it encounters an `implementation_rea
 
 ### With a proposal path
 ```
-/cdoc:implement cdocs/proposals/2026-01-29_topic.md
+/cdoc:implement cdocs/proposals/2026-01-29-topic.md
 ```
 Directly begin implementing the specified proposal.
 
@@ -36,7 +36,7 @@ If no proposals are `implementation_ready`, report that and suggest checking `/c
    - Reference the proposal path in the devlog's Objective section.
 4. **Create a task list**: break the proposal's implementation phases into trackable tasks.
 5. **Execute implementation phases** following the proposal's plan:
-   - Work through phases sequentially (or in parallel per `rules/workflow_patterns.md` when applicable).
+   - Work through phases sequentially (or in parallel per `rules/workflow-patterns.md` when applicable).
    - Commit frequently using conventional commit format.
    - Update the devlog as work proceeds (decisions, complications, deviations from the plan).
 6. **On completion**: update the devlog with verification results, mark it `status: review_ready`.

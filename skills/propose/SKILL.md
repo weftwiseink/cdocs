@@ -16,7 +16,7 @@ They should retain a "timeless" quality: design changes are noted in NOTE callou
 
 1. If `$ARGUMENTS` provides a topic, use it. Otherwise, prompt the user.
 2. Determine today's date.
-3. Create `cdocs/proposals/YYYY-MM-DD_topic.md` using the template below.
+3. Create `cdocs/proposals/YYYY-MM-DD-topic.md` using the template below.
 4. If `cdocs/proposals/` doesn't exist, suggest running `/cdoc:init` first.
 
 ## Template

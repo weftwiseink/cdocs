@@ -2,7 +2,7 @@
 first_authored:
   by: "@claude-opus-4-5-20251101"
   at: 2026-01-29T14:00:00-08:00
-task_list: cdocs/nit_fix
+task_list: cdocs/nit-fix
 type: proposal
 state: live
 status: request_for_proposal
@@ -16,7 +16,7 @@ tags: [claude_skills, workflow_automation, writing_conventions]
 
 ## Objective
 
-CDocs has a growing set of writing conventions (`rules/writing_conventions.md`) that are easy to violate and tedious to enforce manually.
+CDocs has a growing set of writing conventions (`rules/writing-conventions.md`) that are easy to violate and tedious to enforce manually.
 A lightweight haiku subagent can scan documents for mechanical violations and fix them, similar to a linter but for prose conventions.
 
 ## Scope
