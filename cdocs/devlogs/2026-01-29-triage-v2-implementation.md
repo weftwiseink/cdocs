@@ -5,7 +5,7 @@ first_authored:
 task_list: cdocs/haiku-subagent
 type: devlog
 state: live
-status: wip
+status: review_ready
 tags: [triage-v2, agents, plugin_idioms, implementation]
 ---
 
@@ -74,4 +74,24 @@ Updated `rules/workflow-patterns.md` to reflect agent-based architecture: triage
 
 ## Verification
 
-(Pending: plugin validation passed, runtime testing needed)
+**Plugin validation:**
+```
+$ claude plugin validate plugins/cdocs
+✔ Validation passed
+```
+
+**Agent files created:**
+```
+plugins/cdocs/agents/
+├── reviewer.md  (1362 bytes)
+└── triage.md    (3794 bytes)
+```
+
+**Commit history:**
+```
+d1b32c2 docs: update workflow-patterns for agent-based triage architecture
+2acacb4 feat: create reviewer agent with skills preloading
+257ade7 feat: create triage agent and refactor skill to thin dispatcher
+```
+
+**Runtime testing:** Deferred. Agent registration, tool restriction enforcement, skills preloading, and end-to-end triage->review flow require interactive `claude -p` invocations with `--plugin-dir` to validate. These were confirmed working in Phase 0 for test agents; the v2 agents use the same mechanisms.
