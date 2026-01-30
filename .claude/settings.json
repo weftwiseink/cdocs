@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "weft-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "weftwiseink/cdocs"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "cloc@weft-marketplace": true
+  }
+}

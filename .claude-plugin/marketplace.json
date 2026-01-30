@@ -1,0 +1,18 @@
+{
+  "name": "weft-marketplace",
+  "owner": {
+    "name": "weftwiseink"
+  },
+  "metadata": {
+    "description": "Claude Code plugin marketplace by weftwiseink",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "cloc",
+      "source": "./plugins/clocs",
+      "description": "Documentation framework for structured devlogs, proposals, reviews, and reports",
+      "category": "productivity"
+    }
+  ]
+}
