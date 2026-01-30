@@ -80,7 +80,9 @@ Key design choices:
 
 ### Phase 3: Workflow Integration
 
-(To be filled during implementation.)
+Updated `plugins/cdocs/rules/workflow-patterns.md` with two changes:
+1. Added "Pre-Review Nit Fix" section documenting the author -> nit-fix -> triage -> review pipeline.
+2. Updated the Architecture section under "End-of-Turn Triage" from "Two formal agents" to "Three formal agents", adding the nit-fix agent description and updating the dispatcher skill summary to reference all three agents.
 
 ## Changes Made
 

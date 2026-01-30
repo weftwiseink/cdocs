@@ -43,6 +43,28 @@ Use for structured execution of complex implementation plans with 5+ tasks.
 - Document high-level technical decisions in devlog
 - Capture emergent issues that required deviation from plan
 
+## Pre-Review Nit Fix
+
+Before marking a document `review_ready`, run `/cdocs:nit_fix` to clean up mechanical convention violations.
+This reduces reviewer noise: the reviewer focuses on substance rather than formatting.
+
+**Recommended pipeline:** author -> nit-fix -> triage -> review.
+
+1. Author completes the document draft.
+2. Invoke `/cdocs:nit_fix` on the document. The nit-fix agent (haiku, tools: Read/Glob/Grep/Edit) reads all `rules/*.md` files, applies mechanical fixes (sentence-per-line, callout attribution, punctuation, emoji removal), and reports judgment-required violations.
+3. Address any judgment-required violations manually.
+4. Invoke `/cdocs:triage` to validate frontmatter and trigger the review workflow.
+5. The reviewer sees a clean document and focuses on content quality.
+
+**Use when:**
+- A document is ready for review (about to transition to `review_ready`).
+- Batch cleanup across the corpus is desired.
+- The author wants to check convention compliance during drafting.
+
+**Don't use when:**
+- Still mid-authoring (the document is actively being written).
+- Only frontmatter changes were made (triage handles frontmatter).
+
 ## End-of-Turn Triage
 
 After completing substantive work on cdocs documents, invoke `/cdocs:triage` to maintain frontmatter accuracy and trigger workflow continuations.
@@ -68,12 +90,14 @@ After completing substantive work on cdocs documents, invoke `/cdocs:triage` to 
    - `[NONE]`: no action needed.
 4. After review completes, re-triage the review document to validate its frontmatter.
 
-**Architecture:** Two formal agents in `plugins/cdocs/agents/`:
+**Architecture:** Three formal agents in `plugins/cdocs/agents/`:
+- **nit-fix** (haiku): writing convention enforcement on document body prose. Reads all `rules/*.md` files at runtime, applies mechanical fixes, reports judgment-required violations. Infrastructure-enforced tool allowlist (no Write/Bash).
 - **triage** (haiku): mechanical frontmatter analysis and fixes. Infrastructure-enforced tool allowlist (no Write/Bash).
 - **reviewer** (sonnet): structured document reviews. Preloads the review skill via `skills: [cdocs:review]`, reads rules at runtime.
 
-The triage skill (`/cdocs:triage`) is a thin dispatcher: it owns orchestration (when to invoke, how to route), agents own their prompts (what to analyze, how to fix/review).
-See `/cdocs:triage` skill for full dispatch details.
+Each agent has a thin dispatcher skill: `/cdocs:nit_fix`, `/cdocs:triage`, and the triage skill dispatches the reviewer.
+Skills own orchestration (when to invoke, how to route); agents own their prompts (what to analyze, how to fix/review).
+See individual skill files for dispatch details.
 
 ## Completeness and Clarity Checklist
 
