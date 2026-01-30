@@ -1,10 +1,10 @@
 {
   "name": "weft-marketplace",
   "owner": {
-    "name": "weftwiseink"
+    "name": "weft"
   },
   "metadata": {
-    "description": "Claude Code plugin marketplace by weftwiseink",
+    "description": "Claude Code plugin marketplace by weft",
     "version": "0.1.0"
   },
   "plugins": [

@@ -1,4 +1,4 @@
-# CDocs Plugin Development
+# Clauthier Development
 > BLUF(mjr/setup-docs): Always create a devlog, value brevity and technical precision.
 
 IMPORTANT: Always create a devlog.
@@ -10,10 +10,12 @@ IMPORTANT: Your context window will be automatically compacted as it approaches 
 - Commit regularly using the "conventional commit" format.
 - Deduplicating code and docs with the same semantic content is highly desirable.
 
-## CDocs Plugin
+## Marketplace Structure
 
-This repo is a Claude Code marketplace containing the CDocs plugin under `plugins/cdocs/`.
-Writing conventions, workflow patterns, frontmatter spec, and doc-type guidelines are in plugin components:
+This repo is a Claude Code marketplace (`weft-marketplace`) containing plugins under `plugins/`.
+The CDocs plugin lives at `plugins/cdocs/` — see its [README](plugins/cdocs/README.md) for usage.
+
+Plugin internals (rules, skills, agents, hooks) are documented in their respective files:
 
 - **Writing conventions**: `@plugins/cdocs/rules/writing-conventions.md`
 - **Workflow patterns** (parallel agents, subagent dev, checklists): `@plugins/cdocs/rules/workflow-patterns.md`
