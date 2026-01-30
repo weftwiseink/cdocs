@@ -11,14 +11,14 @@ last_reviewed:
   status: revision_requested
   by: "@claude-opus-4-5-20251101"
   at: 2026-01-30T12:15:00-08:00
-  round: 1
+  round: 2
 ---
 
 # Archive Formalism
 
 > BLUF(mjr/cdocs/archive-formalism): Formalize the cdocs document lifecycle with a `_archive/` subdirectory convention: active documents live in `cdocs/$type/`, archived documents move to `cdocs/$type/_archive/`.
-> An `archive` command in the CDocs CLI (`cdocs/proposals/2026-01-30-cdocs-cli.md`) automates the move and rewrites all path references across the project.
-> Implementation is blocked on the CDocs CLI RFP being elaborated and accepted.
+> The convention is adoptable immediately via a manual procedure (move file, update frontmatter, update references).
+> A future `archive` command in the CDocs CLI (`cdocs/proposals/2026-01-30-cdocs-cli.md`) automates the move and rewrites all path references across the project; CLI automation is blocked on the CLI RFP being elaborated.
 
 ## Objective
 
@@ -74,8 +74,23 @@ cdocs/
 ```
 
 The `_archive/` directory is created lazily: it appears only when a document is first archived into that type.
+`/cdocs:init` does not scaffold `_archive/` directories; they are created on first use by either the manual procedure or the CLI command.
 
-### Archive command
+### Manual archival procedure
+
+The directory convention is usable immediately without CLI tooling.
+To archive a document manually:
+
+1. Set `state: archived` in the document's frontmatter.
+2. Create `cdocs/$type/_archive/` if it does not exist.
+3. Move the file from `cdocs/$type/$filename` to `cdocs/$type/_archive/$filename`.
+4. Search the project for references to the old path (e.g., `grep -r "cdocs/$type/$filename"`) and update them to the new path.
+5. Commit the move and all reference updates together.
+
+This procedure is sufficient for low-volume archival.
+The CLI `archive` command (below) automates steps 1-5 for higher-volume or error-prone cases.
+
+### Archive command (CLI automation)
 
 The CDocs CLI provides an `archive` command:
 
@@ -103,6 +118,9 @@ Reference formats to detect:
 The rewrite is a literal string replacement of the old path with the new path.
 Relative paths are recalculated based on the referencing file's location.
 
+Fragment identifiers (e.g., `cdocs/proposals/foo.md#section-heading`) and query strings are handled naturally by literal replacement: the path portion is rewritten and the suffix is preserved.
+The scanner skips binary files (detected by null byte presence or file extension heuristics) to avoid corrupting non-text content.
+
 ### Unarchive support
 
 The command should also support unarchiving:
@@ -112,6 +130,8 @@ cdocs-cli unarchive cdocs/proposals/_archive/2026-01-29-superseded-proposal.md
 ```
 
 This reverses the process: moves the file back, sets `state: live`, and rewrites references.
+Unarchive always sets `state: live` regardless of the pre-archive state.
+This is a deliberate simplification: `deferred` or other pre-archive states are not tracked, and the user can manually adjust `state` after unarchiving if needed.
 
 ## Important Design Decisions
 
@@ -173,10 +193,22 @@ A document at `cdocs/reviews/2026-01-29-review.md` might reference `../proposals
 After archival, the correct relative path becomes `../proposals/_archive/2026-01-29-proposal.md`.
 The scanner must resolve relative paths against the referencing file's directory to correctly detect and rewrite these references.
 
+### Symlinks
+
+If a project uses symlinks pointing to cdocs documents, the archive move breaks the symlink target.
+The archive command does not attempt to detect or update symlinks; this is documented as an unsupported edge case.
+Projects using symlinks to cdocs paths should use path references (which are rewritten) rather than filesystem symlinks.
+
 ### Non-markdown files referencing cdocs paths
 
 Shell scripts, JSON configs, and TypeScript files may contain cdocs paths (e.g., hooks, plugin manifests).
 The literal string replacement approach handles these naturally since it operates on raw text, not parsed markdown.
+
+### Bulk archival
+
+Archiving many documents at once (e.g., end-of-sprint cleanup) is out of scope for this proposal.
+A bulk archival command should plan all moves before executing any rewrites to avoid reference churn.
+This is tracked as future work for the CDocs CLI.
 
 ## Test Plan
 
@@ -192,7 +224,8 @@ The literal string replacement approach handles these naturally since it operate
 
 - Archive a document in a temporary project, verify file moved and frontmatter updated.
 - Create cross-references between documents, archive one, verify all references updated.
-- Unarchive a document, verify reverse operation.
+- Unarchive a document, verify reverse operation and `state: live` assignment.
+- Archive a document with `state: deferred`, unarchive it, verify `state: live` (not `deferred`).
 - Archive with relative path references, verify correct recalculation.
 
 ### Manual verification
@@ -201,16 +234,15 @@ The literal string replacement approach handles these naturally since it operate
 
 ## Implementation Phases
 
-> NOTE(claude-opus-4-5/cdocs/archive-formalism): All phases are blocked on the CDocs CLI RFP (`cdocs/proposals/2026-01-30-cdocs-cli.md`) being elaborated into a full proposal and its initial scaffolding being implemented.
+> NOTE(claude-opus-4-5/cdocs/archive-formalism): Phase 1 is adoptable immediately. Phases 2-5 are blocked on the CDocs CLI RFP (`cdocs/proposals/2026-01-30-cdocs-cli.md`) being elaborated into a full proposal and its initial scaffolding being implemented.
 
-### Phase 1: Directory convention
+### Phase 1: Directory convention (no CLI dependency)
 
-- Create `_archive/` directories under each cdocs type directory.
-- Update `plugins/cdocs/skills/init/SKILL.md` to scaffold `_archive/` subdirectories during `/cdocs:init`.
 - Update `plugins/cdocs/rules/frontmatter-spec.md` to document the `_archive/` convention and its relationship to `state: archived`.
-- Add a `.gitkeep` in each `_archive/` directory or document that they are created lazily.
+- Document the manual archival procedure in the frontmatter spec or a new conventions document.
+- `_archive/` directories are created lazily on first use, not eagerly scaffolded by `/cdocs:init`.
 
-**Success criteria**: `/cdocs:init` creates `_archive/` directories; frontmatter spec documents the convention.
+**Success criteria**: frontmatter spec documents the convention and manual procedure; first manual archival creates `_archive/` and correctly updates references.
 
 ### Phase 2: Archive command core
 
