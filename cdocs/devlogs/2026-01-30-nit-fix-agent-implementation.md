@@ -5,7 +5,7 @@ first_authored:
 task_list: cdocs/nit-fix-v2
 type: devlog
 state: live
-status: wip
+status: review_ready
 tags: [claude_skills, writing_conventions, subagent_patterns, plugin_idioms]
 ---
 
@@ -88,8 +88,21 @@ Updated `plugins/cdocs/rules/workflow-patterns.md` with two changes:
 
 | File | Change |
 |------|--------|
-| (to be filled) | |
+| `plugins/cdocs/agents/nit-fix.md` | Created: haiku agent definition with Read/Glob/Grep/Edit tools |
+| `plugins/cdocs/skills/nit_fix/SKILL.md` | Created: thin dispatcher skill for nit-fix agent |
+| `plugins/cdocs/rules/workflow-patterns.md` | Updated: added Pre-Review Nit Fix section and nit-fix to architecture |
+| `cdocs/proposals/2026-01-29-nit-fix-agent.md` | Updated: status implementation_ready -> implementation_wip |
 
 ## Verification
 
-(To be filled on completion.)
+All deliverables from the proposal are implemented:
+
+1. **Agent definition** (`plugins/cdocs/agents/nit-fix.md`): follows the same YAML frontmatter + markdown body pattern as `triage.md` and `reviewer.md`. Uses `model: haiku`, `tools: Read, Glob, Grep, Edit`. Agent body matches Appendix A of the proposal with no modifications needed.
+
+2. **Dispatcher skill** (`plugins/cdocs/skills/nit_fix/SKILL.md`): follows the same YAML frontmatter + behavior pattern as the triage skill. Supports single-file and batch invocation modes.
+
+3. **Workflow integration** (`plugins/cdocs/rules/workflow-patterns.md`): documents the pre-review nit-fix pipeline and updates the architecture section to include all three agents.
+
+4. **Phase 0 validation**: haiku correctly classified all 11 writing conventions and handled all 6 protected zone types. No fallback markup needed.
+
+No deviations from the proposal's design.
