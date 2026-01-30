@@ -49,7 +49,7 @@ When elaborating an RFP stub (`status: request_for_proposal`) in-place:
 
 1. Preserve `first_authored` unchanged (the original author retains attribution).
 2. Preserve the existing BLUF, Objective, and Scope content as starting points.
-3. Insert the full proposal sections after Scope: Background, Proposed Solution, Design Decisions, Edge Cases, Test Plan, Implementation Phases.
+3. Insert the full proposal sections after Scope: Background, Proposed Solution, Important Design Decisions, Edge Cases, Test Plan, Implementation Phases.
 4. Preserve Open Questions at the end of the document. Resolve them inline during elaboration or leave them for reviewers.
 5. Expand the BLUF to cover the full proposal scope (the original BLUF captured the idea; the elaborated BLUF summarizes the design).
 6. Transition `status` from `request_for_proposal` to `wip`.
