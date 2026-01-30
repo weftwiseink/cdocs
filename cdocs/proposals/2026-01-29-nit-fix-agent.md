@@ -5,7 +5,7 @@ first_authored:
 task_list: cdocs/nit-fix-v2
 type: proposal
 state: live
-status: implementation_ready
+status: implementation_wip
 last_reviewed:
   status: accepted
   by: "@claude-sonnet-4-20250514"
