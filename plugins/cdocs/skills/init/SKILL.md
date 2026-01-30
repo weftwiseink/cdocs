@@ -1,0 +1,86 @@
+---
+name: init
+description: Scaffold CDocs directory structure in a project
+argument-hint: "[--minimal]"
+---
+
+# CDocs Init
+
+Scaffold the CDocs documentation structure in the current project.
+
+## Behavior
+
+1. Create directory structure:
+   - `cdocs/devlogs/`
+   - `cdocs/proposals/`
+   - `cdocs/reviews/`
+   - `cdocs/reports/`
+   - `cdocs/_media/`
+
+2. Generate a lightweight README.md in each document subdir with:
+   - A brief description of the doc type's purpose.
+   - A format summary (required sections, naming convention).
+   - A reference to the full skill: "See `/cdocs:<type>` for complete authoring guidelines."
+
+3. Create or update `.claude/rules/cdocs.md` with core CDocs writing conventions.
+   If `.claude/rules/` doesn't exist, create it.
+   If the project has a CLAUDE.md, add a reference line: `@.claude/rules/cdocs.md`
+
+4. If `$ARGUMENTS` includes `--minimal`, skip README generation and rules file creation.
+   Only create the bare directory structure.
+
+## README Templates
+
+### devlogs/README.md
+```
+# Development Logs
+
+Detailed logs of development work.
+See `/cdocs:devlog` for complete authoring guidelines.
+
+**Naming:** `YYYY-MM-DD-feature-name.md`
+
+**Key sections:** Objective, Plan, Implementation Notes, Changes Made, Verification.
+```
+
+### proposals/README.md
+```
+# Proposals
+
+Design and solution proposals.
+See `/cdocs:propose` for complete authoring guidelines.
+
+**Naming:** `YYYY-MM-DD-topic.md`
+
+**Key sections:** BLUF, Objective, Background, Proposed Solution, Design Decisions, Edge Cases, Phases.
+```
+
+### reviews/README.md
+```
+# Reviews
+
+Document reviews with structured findings and verdicts.
+See `/cdocs:review` for complete authoring guidelines.
+
+**Naming:** `YYYY-MM-DD-review-of-{doc-name}.md`
+
+**Key sections:** Summary Assessment, Section-by-Section Findings, Verdict, Action Items.
+```
+
+### reports/README.md
+```
+# Reports
+
+Findings, status updates, and analysis.
+See `/cdocs:report` for complete authoring guidelines.
+
+**Naming:** `YYYY-MM-DD-topic.md`
+
+**Key sections:** BLUF, Context/Background, Key Findings, Analysis, Recommendations.
+```
+
+## Notes
+
+- Do not overwrite existing files. If `cdocs/` already exists, only create missing subdirectories and files.
+- Use `mkdir -p` for directory creation (idempotent).
+- Check for existing content before writing READMEs to avoid clobbering user modifications.

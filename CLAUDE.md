@@ -1,4 +1,4 @@
-# CLocs Plugin Development
+# CDocs Plugin Development
 > BLUF(mjr/setup-docs): Always create a devlog, value brevity and technical precision.
 
 IMPORTANT: Always create a devlog.
@@ -10,14 +10,14 @@ IMPORTANT: Your context window will be automatically compacted as it approaches 
 - Commit regularly using the "conventional commit" format.
 - Deduplicating code and docs with the same semantic content is highly desirable.
 
-## CLocs Plugin
+## CDocs Plugin
 
-This repo is a Claude Code marketplace containing the CLocs plugin under `plugins/clocs/`.
+This repo is a Claude Code marketplace containing the CDocs plugin under `plugins/cdocs/`.
 Writing conventions, workflow patterns, frontmatter spec, and doc-type guidelines are in plugin components:
 
-- **Writing conventions**: `@plugins/clocs/rules/writing-conventions.md`
-- **Workflow patterns** (parallel agents, subagent dev, checklists): `@plugins/clocs/rules/workflow-patterns.md`
-- **Frontmatter spec**: `@plugins/clocs/rules/frontmatter-spec.md`
-- **Skills**: `plugins/clocs/skills/{devlog,propose,review,report,status,init}/SKILL.md`
+- **Writing conventions**: `@plugins/cdocs/rules/writing-conventions.md`
+- **Workflow patterns** (parallel agents, subagent dev, checklists): `@plugins/cdocs/rules/workflow-patterns.md`
+- **Frontmatter spec**: `@plugins/cdocs/rules/frontmatter-spec.md`
+- **Skills**: `plugins/cdocs/skills/{devlog,propose,review,report,status,init}/SKILL.md`
 
-Test the marketplace locally: `/plugin marketplace add .` then `/plugin install cloc@weft-marketplace`
+Test the marketplace locally: `/plugin marketplace add .` then `/plugin install cdocs@weft-marketplace`

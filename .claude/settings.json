@@ -8,6 +8,6 @@
     }
   },
   "enabledPlugins": {
-    "cloc@weft-marketplace": true
+    "cdocs@weft-marketplace": true
   }
 }

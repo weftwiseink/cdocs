@@ -9,8 +9,8 @@
   },
   "plugins": [
     {
-      "name": "cloc",
-      "source": "./plugins/clocs",
+      "name": "cdocs",
+      "source": "./plugins/cdocs",
       "description": "Documentation framework for structured devlogs, proposals, reviews, and reports",
       "category": "productivity"
     }

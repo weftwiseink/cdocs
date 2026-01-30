@@ -1,44 +1,44 @@
-# CLocs
+# CDocs
 
 A Claude Code plugin for structured development documentation.
 
-CLocs provides skills, rules, and hooks for creating and managing devlogs, proposals, reviews, and reports with consistent formatting, frontmatter metadata, and writing conventions.
+CDocs provides skills, rules, and hooks for creating and managing devlogs, proposals, reviews, and reports with consistent formatting, frontmatter metadata, and writing conventions.
 
 ## Installation
 
 ```bash
 # Clone the plugin
-git clone https://github.com/weftwiseink/clocs ~/.claude/clocs-plugin
+git clone https://github.com/weftwiseink/cdocs ~/.claude/cdocs-plugin
 
 # Option A: Per-session
-claude --plugin-dir ~/.claude/clocs-plugin
+claude --plugin-dir ~/.claude/cdocs-plugin
 
 # Option B: Enable in user settings (~/.claude/settings.json)
-# "enabledPlugins": { "cloc": true }
+# "enabledPlugins": { "cdocs": true }
 ```
 
 ## Quick Start
 
 ```
-/cloc:init              # Scaffold clocs/ in your project
-/cloc:devlog my_feature # Create a devlog (also auto-created by Claude)
-/cloc:propose my_topic # Author a design proposal
-/cloc:review path/to/doc.md  # Review a document
-/cloc:report my_topic   # Generate a report
-/cloc:status            # List all docs with metadata
-/cloc:status --type=proposal --status=wip  # Filter docs
+/cdocs:init              # Scaffold cdocs/ in your project
+/cdocs:devlog my_feature # Create a devlog (also auto-created by Claude)
+/cdocs:propose my_topic # Author a design proposal
+/cdocs:review path/to/doc.md  # Review a document
+/cdocs:report my_topic   # Generate a report
+/cdocs:status            # List all docs with metadata
+/cdocs:status --type=proposal --status=wip  # Filter docs
 ```
 
 ## Skills
 
 | Skill | Description |
 |-------|-------------|
-| `/cloc:init` | Scaffold `clocs/` directory structure in a project |
-| `/cloc:devlog` | Create a development log |
-| `/cloc:propose` | Author a design proposal with structured sections |
-| `/cloc:review` | Review a document with findings and verdict |
-| `/cloc:report` | Generate a report (status, investigation, incident, audit, retrospective) |
-| `/cloc:status` | Query and manage document metadata |
+| `/cdocs:init` | Scaffold `cdocs/` directory structure in a project |
+| `/cdocs:devlog` | Create a development log |
+| `/cdocs:propose` | Author a design proposal with structured sections |
+| `/cdocs:review` | Review a document with findings and verdict |
+| `/cdocs:report` | Generate a report (status, investigation, incident, audit, retrospective) |
+| `/cdocs:status` | Query and manage document metadata |
 
 Any skill can be invoked by the user or auto-invoked by Claude depending on context.
 Devlogs are most commonly auto-invoked; proposals, reviews, and reports are typically user-requested.
@@ -49,20 +49,20 @@ Loaded automatically when the plugin is active:
 
 - **`writing-conventions.md`:** BLUF, brevity, callout syntax, sentence-per-line, critical analysis.
 - **`workflow-patterns.md`:** Parallel agent dispatch, subagent-driven development, completeness checklists.
-- **`frontmatter-spec.md`:** YAML frontmatter field definitions and valid values (scoped to `clocs/**/*.md`).
+- **`frontmatter-spec.md`:** YAML frontmatter field definitions and valid values (scoped to `cdocs/**/*.md`).
 
 ## Hooks
 
-- **PostToolUse (Write|Edit):** Validates frontmatter on clocs files. Informational warnings only (non-blocking).
+- **PostToolUse (Write|Edit):** Validates frontmatter on cdocs files. Informational warnings only (non-blocking).
 
 ## Document Types
 
 | Type | Directory | Purpose |
 |------|-----------|---------|
-| Devlog | `clocs/devlogs/` | Working logs of development sessions |
-| Proposal | `clocs/proposals/` | Design and solution specifications |
-| Review | `clocs/reviews/` | Structured document reviews with verdicts |
-| Report | `clocs/reports/` | Audience-facing findings and analysis |
+| Devlog | `cdocs/devlogs/` | Working logs of development sessions |
+| Proposal | `cdocs/proposals/` | Design and solution specifications |
+| Review | `cdocs/reviews/` | Structured document reviews with verdicts |
+| Report | `cdocs/reports/` | Audience-facing findings and analysis |
 
 All documents use `YYYY-MM-DD-dash-case.md` naming and require YAML frontmatter.
 
