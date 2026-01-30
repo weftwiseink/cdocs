@@ -70,7 +70,13 @@ Key differences from triage: nit-fix reads all `rules/*.md` files (not just `fro
 
 ### Phase 2: Dispatcher Skill
 
-(To be filled during implementation.)
+Created `plugins/cdocs/skills/nit_fix/SKILL.md` as a thin dispatcher.
+Follows the same pattern as the triage skill: collects paths, invokes agent via Task tool, presents results.
+
+Key design choices:
+- Batch mode (no arguments) globs `cdocs/**/*.md` excluding READMEs.
+- Results interpretation section explains the three report sections (fixes applied, judgment required, clean).
+- No agent instructions in the skill: the agent owns its prompt and the skill owns orchestration.
 
 ### Phase 3: Workflow Integration
 
