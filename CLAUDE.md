@@ -12,7 +12,7 @@ IMPORTANT: Your context window will be automatically compacted as it approaches 
 
 ## Marketplace Structure
 
-This repo is a Claude Code marketplace (`weft-marketplace`) containing plugins under `plugins/`.
+This repo is a Claude Code marketplace (`clauthier`) containing plugins under `plugins/`.
 The CDocs plugin lives at `plugins/cdocs/` — see its [README](plugins/cdocs/README.md) for usage.
 
 Plugin internals (rules, skills, agents, hooks) are documented in their respective files:
@@ -22,4 +22,4 @@ Plugin internals (rules, skills, agents, hooks) are documented in their respecti
 - **Frontmatter spec**: `@plugins/cdocs/rules/frontmatter-spec.md`
 - **Skills**: `plugins/cdocs/skills/{devlog,propose,review,report,status,init,triage,implement}/SKILL.md`
 
-Test the marketplace locally: `/plugin marketplace add .` then `/plugin install cdocs@weft-marketplace`
+Test the marketplace locally: `/plugin marketplace add .` then `/plugin install cdocs@clauthier`

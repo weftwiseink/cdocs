@@ -72,7 +72,7 @@ The Claude Code marketplace docs specify:
 ```json
 {
   "extraKnownMarketplaces": {
-    "weft-marketplace": {
+    "clauthier": {
       "source": {
         "source": "github",
         "repo": "weftwiseink/cdocs"
@@ -80,7 +80,7 @@ The Claude Code marketplace docs specify:
     }
   },
   "enabledPlugins": {
-    "cdocs@weft-marketplace": true
+    "cdocs@clauthier": true
   }
 }
 ```
@@ -89,7 +89,7 @@ NOTE(mjr): For local development, add the marketplace locally via `/plugin marke
 
 ## Important Design Decisions
 
-### Decision: marketplace name `weft-marketplace`
+### Decision: marketplace name `clauthier`
 
 **Why:** Neutral, org-level name that can host plugins beyond cdocs in the future.
 

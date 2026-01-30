@@ -1,63 +1,27 @@
 # Clauthier
 
-A Claude Code plugin marketplace by [weft](https://github.com/weft).
+Clothe thine claude.
 
-## Plugins
+Plugins:
+* [cdocs](plugins/cdocs/): Structured development documentation: devlogs, proposals, reviews, and reports.
 
-| Plugin | Description |
-|--------|-------------|
-| [cdocs](plugins/cdocs/) | Structured development documentation: devlogs, proposals, reviews, and reports |
+## Normal Installation
 
-## Installation
-
-Add the marketplace and enable a plugin in your project's `.claude/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "weft-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "weft/clauthier"
-      }
-    }
-  },
-  "enabledPlugins": {
-    "cdocs@weft-marketplace": true
-  }
-}
+cdocs is intended to leave behind artifacts and records of its processes, thus should be installed at the project level:
+```bash
+claude plugin marketplace add weftwiseink/clauthier
+claude plugin install cdocs@clauthier --scope project
 ```
-
-See each plugin's README for detailed usage.
 
 ## Local Installation
 
-For rapid iteration on marketplace plugins, or to dogfood changes before publishing, point the marketplace source at a local checkout instead of GitHub:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "weft-marketplace": {
-      "source": {
-        "source": "local",
-        "directory": "/path/to/clauthier"
-      }
-    }
-  },
-  "enabledPlugins": {
-    "cdocs@weft-marketplace": true
-  }
-}
+Prob don't want to do this unless you're @micimize - intended for dogfooding:
+```bash
+echo "
+NOTE: if using containers and mounting ~/.claude, you'll need to mount the marketplace to the EXACT same path.
+cloning into into '`pwd`/clauthier'
+"
+git clone git@github.com:weft/clauthier.git
+claude plugin marketplace add ./clauthier
+claude plugin install cdocs@clauthier --scope project
 ```
-
-Add this to the `.claude/settings.json` of any project that depends on these plugins.
-Changes to the local checkout take effect on the next Claude Code session — no reinstall needed.
-
-This is the recommended setup for:
-- Developing new plugins or skills against a real project.
-- Testing plugin changes before pushing to the repo.
-- Running multiple projects with a shared local marketplace.
-
-## License
-
-MIT

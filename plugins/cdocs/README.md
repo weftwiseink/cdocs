@@ -1,46 +1,18 @@
 # CDocs
-
-A Claude Code plugin for structured development documentation.
+Circumlocutory Docs:
+A Claude Code plugin for structured development process docs.
 
 CDocs provides skills, rules, and hooks for creating and managing devlogs, proposals, reviews, and reports with consistent formatting, frontmatter metadata, and writing conventions.
 
+> NOTE(mjr): This plugin currently has a few loose workflows but nothing is rigidly codified or reliable.
+> Not yet for general consumption, although IDK if folks/orgs should really be using process plugins like this they didn't write themselves anyhow
+
 ## Installation
 
-CDocs is distributed through the [clauthier](https://github.com/weft/clauthier) marketplace.
-
-### Project-level (recommended)
-
-Add this to your project's `.claude/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "weft-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "weft/clauthier"
-      }
-    }
-  },
-  "enabledPlugins": {
-    "cdocs@weft-marketplace": true
-  }
-}
-```
-
-Commit the settings file.
-Every Claude Code session in the project will load CDocs automatically.
-
-### User-level
-
-Add the same configuration to `~/.claude/settings.json` instead.
-This enables CDocs across all your projects, which is less targeted but useful for personal workflows.
-
-### Interactive
-
-```
-/plugin marketplace add weft-marketplace --source github --repo weft/clauthier
-/plugin install cdocs@weft-marketplace
+Project level recommended:
+```bash
+claude plugin marketplace add weftwiseink/clauthier
+claude plugin install cdocs@clauthier --scope project
 ```
 
 ## Quick Start
@@ -91,7 +63,3 @@ Loaded automatically when the plugin is active:
 | Report | `cdocs/reports/` | Audience-facing findings and analysis |
 
 All documents use `YYYY-MM-DD-dash-case.md` naming and require YAML frontmatter.
-
-## License
-
-MIT

@@ -1,13 +1,5 @@
 {
-  "extraKnownMarketplaces": {
-    "weft-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "weft/clauthier"
-      }
-    }
-  },
   "enabledPlugins": {
-    "cdocs@weft-marketplace": true
+    "cdocs@clauthier": true
   }
 }
