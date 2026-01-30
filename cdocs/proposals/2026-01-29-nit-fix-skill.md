@@ -7,6 +7,11 @@ type: proposal
 state: live
 status: wip
 tags: [claude_skills, workflow_automation, writing_conventions, subagent_patterns]
+last_reviewed:
+  status: revision_requested
+  by: "@claude-opus-4-5-20251101"
+  at: 2026-01-29T15:30:00-08:00
+  round: 1
 ---
 
 # Nit Fix Skill

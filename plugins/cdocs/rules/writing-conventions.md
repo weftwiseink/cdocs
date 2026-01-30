@@ -24,11 +24,11 @@ This makes diffs cleaner and editing easier.
 
 ## Callout Syntax
 
-Use these callouts to leave context for future readers:
-
-- `NOTE(author/workstream):` Context, caveats, or design commentary that doesn't belong in the main flow.
-- `TODO(author/workstream):` Known work remaining.
-- `WARN(author/workstream):` Risks, gotchas, or things that could break.
+Use these callouts to leave context for future readers.
+For example:
+- `NOTE(opus/traige-subagent):` Context, caveats, or design commentary that doesn't belong in the main flow.
+- `TODO(sonnet/big-refactor):` Known work remaining.
+- `WARN(codex/cdocs/architecture-review):` Risks, gotchas, or things that could break.
 
 The parenthetical is an attribution in the format `author/workstream`, which often maps to a feature branch name.
 Add slashes for subprojects: `NOTE(mjr/cdocs/hooks)`.
@@ -47,7 +47,7 @@ When implementation diverges from design, add a NOTE callout rather than rewriti
 
 ```md
 ### Some Component
-> NOTE(sculptor/my-feat): Implementation has special cases not in the original design.
+> NOTE(opus/my-feat): Implementation has special cases not in the original design.
 > See `myEdgecaseReconciler` for details.
 
 ... Original clean design documentation ...

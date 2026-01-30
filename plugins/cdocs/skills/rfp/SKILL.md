@@ -31,9 +31,11 @@ Fill in:
 
 ## Sections
 
-RFP stubs have four required sections. Keep stubs lightweight: capture intent and scope, not design.
+RFP stubs have four required sections.
+Keep stubs lightweight: capture intent and scope, not design.
 
 - **> BLUF:** One-line summary of the idea and its value.
+  - Ideally contains a **Motivated By:** `${paths to motivating cdocs}` bullet point
 - **Objective:** The problem or improvement goal.
 - **Scope:** What the full proposal should explore. Frame as questions or bullet points.
 - **Open Questions:** Unknowns that need resolution before or during elaboration.
@@ -47,7 +49,8 @@ Common optional sections include:
 - **Prior Art**: links to related docs, external references, or existing implementations.
 - **Context**: brief background if the objective alone is insufficient.
 
-These are suggestions, not requirements. The goal is to capture enough information to seed a future proposal without over-specifying the design.
+These are suggestions, not requirements.
+The goal is to capture enough information to seed a future proposal without over-specifying the design.
 
 ## Relationship to `/cdocs:propose`
 
