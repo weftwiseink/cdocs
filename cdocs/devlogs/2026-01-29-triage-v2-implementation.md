@@ -4,8 +4,8 @@ first_authored:
   at: 2026-01-29T21:06:05-08:00
 task_list: cdocs/haiku-subagent
 type: devlog
-state: live
-status: review_ready
+state: archived
+status: done
 tags: [triage-v2, agents, plugin_idioms, implementation]
 ---
 

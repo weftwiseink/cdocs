@@ -4,8 +4,8 @@ first_authored:
   at: 2026-01-29T20:26:13-08:00
 task_list: triage-v2/phase-0-validation
 type: devlog
-state: live
-status: complete
+state: archived
+status: done
 tags: [agents, plugins, hooks, skills, triage-v2, validation]
 ---
 

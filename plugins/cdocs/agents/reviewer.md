@@ -29,7 +29,7 @@ Your Task prompt provides the path to the document to review.
 
 1. Read the rule files listed above.
 2. Read the target document fully.
-3. If the target is a devlog, also review code diffs and context referenced in it.
+3. If the target is a devlog, read the files listed in its Changes Made table and any other referenced files to review the actual implementation.
 4. Conduct the review following the preloaded review skill methodology.
 5. Write the review to `cdocs/reviews/YYYY-MM-DD-review-of-{doc-name}.md`.
 6. Update the target document's `last_reviewed` frontmatter with the review outcome.
