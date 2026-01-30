@@ -4,8 +4,8 @@ first_authored:
   at: 2026-01-29T15:00:00-08:00
 task_list: cdocs/nit-fix
 type: devlog
-state: live
-status: wip
+state: archived
+status: done
 tags: [claude_skills, writing_conventions, subagent_patterns, proposal_authoring]
 ---
 

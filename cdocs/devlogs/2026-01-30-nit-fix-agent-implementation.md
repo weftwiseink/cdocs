@@ -4,8 +4,8 @@ first_authored:
   at: 2026-01-30T15:17:00+00:00
 task_list: cdocs/nit-fix-v2
 type: devlog
-state: live
-status: review_ready
+state: archived
+status: done
 tags: [claude_skills, writing_conventions, subagent_patterns, plugin_idioms]
 ---
 

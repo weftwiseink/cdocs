@@ -5,7 +5,7 @@ first_authored:
   at: 2026-01-30T09:30:00-08:00
 task_list: cdocs/nit-fix-v2
 type: review
-state: live
+state: archived
 status: done
 tags: [rereview_agent, writing_conventions, subagent_patterns, multi_rule]
 ---

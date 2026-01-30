@@ -4,8 +4,8 @@ first_authored:
   at: 2026-01-29T16:30:00-08:00
 task_list: cdocs/nit-fix-v2
 type: proposal
-state: live
-status: implementation_wip
+state: archived
+status: implementation_accepted
 last_reviewed:
   status: accepted
   by: "@claude-sonnet-4-20250514"
