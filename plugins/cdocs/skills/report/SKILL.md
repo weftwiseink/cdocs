@@ -16,10 +16,12 @@ Topics may be:
 - The result of some analysis or investigation such as performance testing, profiling, or a spike/prototype.
 - Any other ad-hoc work that fits the broad exploration/synthesis model.
 
-Reports might optionally result in some suggestions, but they are usually less conclusive than a decision proposal and should be framed as reference recommendations for deeper consideration of all options (ie, maybe the report is part of a series done on each option)
+Reports might optionally result in some suggestions, but they are usually less conclusive than a decision proposal and should be framed as reference recommendations for deeper consideration of all options (ie, maybe the report is part of a series done on each option).
 
 Reports are audience-facing documents that summarize findings, status, or analysis.
 They differ from devlogs: reports answer "what did we learn/accomplish?" while devlogs answer "how did we do the work?"
+
+Some reports are ad-hoc topic notes or supplemental materials - it is the most flexible cdoc type.
 
 ## Invocation
 

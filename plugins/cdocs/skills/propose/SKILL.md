@@ -64,39 +64,58 @@ No confirmation is needed unless context clues suggest otherwise (e.g., the user
 ## Sections
 
 All proposals should always include a BLUF, and almost always an objective and background section.
-Most proposals should include the other sections as well, but use your judgement (ie a high-level architecture proposal does not need unit test plans).
+Most should include many of the other sections as well, but use your judgement (ie a high-level architecture proposal does not need unit test plans).
+However, a fully fledged implementation proposal should have exhuastive test, verification, and implementation phase sections.
 You may also include novel sections not specified - again, use your judgement and think critically to the best of your ability when crafting the proposal.
 
-- **> BLUF:** Bottom line summary at top. Must clearly state the approach without surprises and line up with the final settled approach. Reference the most important sources.
+Some of these sections can get fairly verbose and may not be necessary for the implementer to have directly on-hand.
+In such cases, consider breaking the exhaustive details of the section into a supplemental `/cdocs:report` and referencing it with a summary of key take-aways and notes.
+> NOTE: Only maintain one supplemental per-proposal, and consider leveraging subagents for their authorship or factoring-out.
+
+- **> BLUF:** Concise Bottom Line UpFront summary at top of proposal.
+  Should succinctly state the most important info and conclusions, and should be kept up-to-date if they change.
+- **Summary:** Add at the end of the authoring process to provide more details, notes, and references to make the proposal more digestible.
+  Shouldn't be too long but is a good opportunity to flag context or add other `> NOTE`s that would bloat the BLUF.
 - **Objective:** Problem or improvement goal.
-- **Background:** Important docs, links, prior art. Context needed to understand the proposal.
-- **Proposed Solution:** Architecture or approach. The core of the proposal.
-- **Important Design Decisions:** Each decision with "Decision" and "Why" subsections. Explain rationale, not just the choice.
-- **Stories:** User or logical scenarios to consider
-- **Edge Cases:** What could go wrong, how to handle it.
-- **Phases:** Detailed unless otherwise requested, should usually include testing plans, should never include time estimates. More guidance below
+- **Background:** Important docs, links, prior art.
+  Context needed to understand the proposal.
+  Often prior or referenced dedicated reports are useful here.
+- **Proposed Solution:** Architecture or approach, the core of the proposal.
+- **Important Design Decisions,** briefly qualified.
+  If lots of lateral consideration or exposition is worthwhile, consider using the supplemental pattern.
+- **Stories:** User or logical scenarios to consider.
+  If the proposal is complex with many stories in need of consideration, use the supplemental pattern.
+- **Edge Cases:** What could go wrong, how to handle it. Consider supplementing
+- **Test Plan:** What do we need to test? Examples?
+  Critical for a fully fledged implementation proposal.
+- **Verification Methodology:** What iterative, direct method should the implementer utilize to truly verify the results are as expected?
+  Critical for a fully fledged implementation proposal.
+  If the project doesn't have some established convention/tooling for making this straightforward, consider flagging and suggesting a `/cdocs:rfp`.
+- **Implementation Phases:** Detailed unless otherwise requested, should never include time estimates.
+  Should usually include expansions of or references to testing plans.
+  Critical for a fully fledged implementation proposal.
+  More guidance below.
 
 ## Implementation Phase Guidance
 
-**For standard iterative development:**
-- Break into logical phases.
-- Focus on high-level steps, not prescriptive details.
-- Trust developer judgment on approach.
+- Break into logical, verifiable phases.
+- Providing examples and snippets outlining key abstractions is useful, but avoid drafting the entire implementation inline (unless you realize it is extremely straightforward).
+- Trust developer judgment on details where practical.
 - Document constraints and "what NOT to change."
 
-**For subagent-driven development (5+ task threshold):**
-When the proposal has 5+ largely independent phases with clear success criteria:
-- Each phase independently executable.
-- Clear success criteria per phase (how to verify completion).
-- Dependencies between phases noted explicitly.
-- Constraints specified (what files/systems NOT to modify).
-- Expected inputs/outputs documented.
+In the case of larger problems, consider recommending subagent/multi-implementer methodology.
+Some heuristics and things to aim for if aiming for this framing:
+- Does the proposal have 5+ largely independent phases with clear success criteria?
+- Is there clear success criteria per phase?
+- Ensure dependencies between phases are noted explicitly.
+- Ensure constraints are specified (what files/systems NOT to modify).
 
 ## Drafting Approach
 
 1. Start with the BLUF. Write it first, even if rough.
 2. Fill in Objective and Background for context.
 3. Explore and consider possible approaches if applicable.
+   Consider starting a supplemental `/cdocs:report` here.
 4. For decision proposals, stay at a medium level of depth, analyze options, and recommend a decision/approach.
 5. For implementation proposals:
    - Break the solution into phases.
@@ -113,11 +132,12 @@ Before marking status as `review_ready`:
 - [ ] Technical decisions explain "why" not just "what."
 - [ ] Follow writing conventions: critical/detached analysis, brevity, commentary decoupled from technical content.
 - [ ] NOTE/TODO/WARN callouts added where future readers need context.
-- [ ] With fresh eyes, review:
+- [ ] Review the following and improve as relevant:
   - [ ] whether someone unfamiliar with the context could follow the proposal.
   - [ ] whether there is anything inconsitent or missing from the initial draft.
+- [] Request a substantive `/cdocs:review` from a subagent and integrate it's feedback.
+     This review should be immediately archived - it is a sanity check / way to cover our bases early.
 
-> NOTE: "Review" here is not a full-fledged review doc or worthy of frontmatter, but rather a professional courtesy to make the review process easier.
 
 ## Revisions
 

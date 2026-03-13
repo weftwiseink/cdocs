@@ -6,7 +6,7 @@ argument-hint: "[proposal_path]"
 
 # CDocs Implement
 
-Implement an accepted proposal.
+Implement a ready proposal.
 
 **Usage:** User-invoked when a proposal has been reviewed and accepted (`status: implementation_ready`).
 Claude may also suggest implementation when it encounters an `implementation_ready` proposal.
@@ -39,7 +39,18 @@ If no proposals are `implementation_ready`, report that and suggest checking `/c
    - Work through phases sequentially (or in parallel per `rules/workflow-patterns.md` when applicable).
    - Commit frequently using conventional commit format.
    - Update the devlog as work proceeds (decisions, complications, deviations from the plan).
+   - Follow verification and troubleshooting methodology to ensure results are as expected.
+  - Request `/cdocs:review` from a subagent after each phase to catch issues early.
+  - Request `/cdocs:report` for research topics not covered by the proposal to find answers without losing your focus.
 6. **On completion**: update the devlog with verification results, mark it `status: review_ready`.
+7. **After completion**:
+  - Have a final subagent `/cdocs:review` the entire body of work and integrate the feedback.
+  - IMPORTANT: Take a step back and seriously consider how "verified" our implementation truly is.
+    This retrospection is critical to our long-term implementation velocity:
+    If we aren't equipping implementers with the right tools to verify their work,
+    That is a project-level concern we need to think about.
+    IE: A webdev needs something like playwright, otherwise they'll be forced to guess & shoot from the hip.
+   
 
 ## Implementation Conventions
 
@@ -62,7 +73,7 @@ The implementor should follow these conventions throughout:
 ### Note deviations from the proposal
 - If the implementation diverges from the proposal's design, document why in the devlog.
 - Use `> NOTE(author/workstream):` callouts in the devlog for deviations (ie `> NOTE(opus/cdocs/haiku_subagent)`).
-- Do not silently change the approach: surface deviations front and center.
+- DO NOT silently change the approach: surface deviations front and center.
 
 ## Status Transitions
 
