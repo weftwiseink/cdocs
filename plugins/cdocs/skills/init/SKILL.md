@@ -29,6 +29,56 @@ Scaffold the CDocs documentation structure in the current project.
 4. If `$ARGUMENTS` includes `--minimal`, skip README generation and rules file creation.
    Only create the bare directory structure.
 
+5. **OpenCode detection and rule deployment:**
+   If `opencode.json` exists in the project root OR a `.opencode/` directory exists, also perform:
+
+   a. Create `.opencode/rules/cdocs/` directory.
+   b. Copy each rule file from the plugin's `rules/` directory into `.opencode/rules/cdocs/` with OC-enhanced frontmatter prepended:
+      ```yaml
+      ---
+      globs:
+        - "cdocs/**/*.md"
+      keywords:
+        - "cdocs"
+        - "cdocs devlog"
+        - "cdocs proposal"
+        - "cdocs review"
+        - "cdocs report"
+      ---
+      ```
+      Strip any existing YAML frontmatter from the source rule file before prepending the OC frontmatter.
+      Add a version comment after the frontmatter: `<!-- cdocs rules v0.1.0 - regenerate with /cdocs:init -->`
+   c. The OC-enhanced frontmatter activates rules conditionally via the `opencode-rules` plugin: they load only when editing cdocs files or mentioning cdocs-specific terms.
+
+6. **AGENTS.md creation (cross-tool fallback):**
+   Create or update an `AGENTS.md` in the project root with inlined rule content (not `@`-imports, for maximum tool compatibility).
+
+   - If AGENTS.md does not exist, create it with a header and the inlined cdocs rules section.
+   - If AGENTS.md already exists, check for `<!-- cdocs-rules-start -->` / `<!-- cdocs-rules-end -->` delimiters:
+     - If found, replace the content between the delimiters with the current rule content.
+     - If not found, append the cdocs rules section at the end of the file.
+   - The cdocs rules section uses this structure:
+     ```markdown
+     <!-- cdocs-rules-start -->
+     ## CDocs Writing Conventions
+
+     [Full content of writing-conventions.md, frontmatter stripped]
+
+     ## CDocs Workflow Patterns
+
+     [Full content of workflow-patterns.md, frontmatter stripped]
+
+     ## CDocs Frontmatter Specification
+
+     [Full content of frontmatter-spec.md, frontmatter stripped]
+     <!-- cdocs-rules-end -->
+     ```
+   - Add a version comment inside the delimiters: `<!-- cdocs rules v0.1.0 - regenerate with /cdocs:init -->`
+   - This is idempotent: running init multiple times updates the content between delimiters without duplication.
+
+   > NOTE(claude-opus-4-6/cross-target-rules): The inlined content can drift from the source rule files if the plugin is updated but init is not re-run.
+   > The version comment helps users identify when regeneration is needed.
+
 ## README Templates
 
 ### devlogs/README.md
