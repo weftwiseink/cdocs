@@ -49,8 +49,45 @@ Loaded automatically when the plugin is active:
 - **`workflow-patterns.md`:** Parallel agent dispatch, subagent-driven development, completeness checklists.
 - **`frontmatter-spec.md`:** YAML frontmatter field definitions and valid values (scoped to `cdocs/**/*.md`).
 
+### Rules Integration
+
+Rules are delivered via three complementary layers with graceful degradation:
+
+1. **CC SessionStart hook** (external installs): A `SessionStart` hook reads all `rules/*.md` files from the plugin directory, strips YAML frontmatter, and injects the combined content as `additionalContext` at session start.
+   This is the primary delivery mechanism for CC marketplace installs where `@`-imports in CLAUDE.md cannot resolve plugin-cache paths.
+   The hook skips injection in the source repo (where rules are already loaded via CLAUDE.md `@`-imports) by checking for `@plugins/cdocs/rules/` in the project's CLAUDE.md.
+
+2. **Agent path resolution**: Agents (nit-fix, triage, reviewer) try relative paths first (`rules/*.md` from the agent's directory), falling back to `plugins/cdocs/rules/*.md` for source-repo contexts.
+   This is experimental belt-and-suspenders alongside the SessionStart hook.
+
+3. **AGENTS.md cross-tool fallback**: The plugin includes an `AGENTS.md` with `@`-imports for the three rule files.
+   CC follows the imports; other agent tools (OpenCode, Codex, Cursor, Copilot, Aider, and 17+ others) read the file directly.
+   For tools that do not follow `@`-imports, `/cdocs:init` creates a project-level AGENTS.md with inlined rule content.
+
+### Rules in OpenCode
+
+When `/cdocs:init` detects an OpenCode project (via `opencode.json` or `.opencode/` directory), it additionally:
+
+- Creates `.opencode/rules/cdocs/` with rule copies enhanced with OC-specific frontmatter (`globs: ["cdocs/**/*.md"]`, `keywords: ["cdocs", "cdocs devlog", ...]`).
+  These activate conditionally via the `opencode-rules` plugin, loading only when editing cdocs files or mentioning cdocs-specific terms.
+- Creates or updates the project AGENTS.md with inlined rule content delimited by `<!-- cdocs-rules-start -->` / `<!-- cdocs-rules-end -->` markers for idempotent re-runs.
+
+The `opencode-rules` plugin is not required: rules fall back to `.claude/rules/` (which OC reads natively) or AGENTS.md.
+
+### When CC #14200 Lands
+
+When Claude Code adds a `rules` field to `plugin.json` ([#14200](https://github.com/anthropics/claude-code/issues/14200)), the SessionStart hook can be replaced with a single manifest declaration:
+
+```json
+{ "rules": "./rules" }
+```
+
+Migration: add the manifest field, delete `hooks/inject-rules.sh`, remove the `SessionStart` entry from `hooks.json`.
+The hook was designed as a temporary workaround; the manifest approach restores `paths:` scoping and `/memory` visibility.
+
 ## Hooks
 
+- **SessionStart:** Injects rule file content as `additionalContext` for CC external installs. Skips injection in the source repo. See "Rules Integration" above.
 - **PostToolUse (Write|Edit):** Validates frontmatter on cdocs files. Informational warnings only (non-blocking).
 
 ## Document Types
