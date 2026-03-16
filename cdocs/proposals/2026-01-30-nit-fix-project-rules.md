@@ -5,11 +5,15 @@ first_authored:
 task_list: cdocs/nit-fix-v2
 type: proposal
 state: live
-status: request_for_proposal
+status: evolved
 tags: [claude_skills, writing_conventions, plugin_idioms, extensibility]
 ---
 
 # Nit Fix: Project-Configured Rules
+
+> NOTE(claude-opus-4-6/cross-target-rules): The core external-install problem described in this RFP is now addressed by the SessionStart hook in the [cross-target rules integration proposal](2026-03-14-cross-target-rules-integration.md).
+> The hook reads all `rules/*.md` from the plugin directory and injects them as `additionalContext` at session start, covering CC marketplace installs.
+> The broader multi-source rule discovery and conflict resolution questions remain open but are lower priority now that the primary delivery gap is closed.
 
 > BLUF(mjr/cdocs/nit-fix-v2): Extend the nit-fix agent to read rules from multiple sources (cdocs plugin, other plugins, project-local configuration) rather than only `plugins/cdocs/rules/writing-conventions.md`.
 > Enables projects to define their own writing conventions while preserving the "no hardcoded rules" design principle.

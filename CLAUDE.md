@@ -23,3 +23,12 @@ Plugin internals (rules, skills, agents, hooks) are documented in their respecti
 - **Skills**: `plugins/cdocs/skills/{devlog,propose,review,report,status,init,triage,implement}/SKILL.md`
 
 Test the marketplace locally: `/plugin marketplace add .` then `/plugin install cdocs@clauthier`
+
+### Cross-Target Rules Architecture
+
+cdocs rules are delivered via three layers with graceful degradation:
+1. **CC SessionStart hook** — injects rule content as `additionalContext` for marketplace installs (workaround for [#14200](https://github.com/anthropics/claude-code/issues/14200)).
+2. **Agent relative paths** — agents try `rules/*.md` from their directory first, falling back to `plugins/cdocs/rules/*.md`.
+3. **AGENTS.md** — cross-tool fallback at `plugins/cdocs/AGENTS.md` using `@`-imports; `/cdocs:init` creates project-level inlined version.
+
+See `plugins/cdocs/README.md` "Rules Integration" for full details.
