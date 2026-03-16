@@ -61,3 +61,48 @@ Synthesized all 6 reports into an executive summary with actionable recommendati
 
 7 reports generated across 8 subagents (2 phase 1, 4 phase 2, plus subagent-generated devlogs).
 Cross-referenced findings across reports — key claims (star counts, feature availability, rule system mechanics) corroborate across independent searches.
+
+### Day 2 — Multi-target proposals and reviews (2026-03-14)
+
+Additional subagent work:
+- **Multi-target strategies report**: Researched approaches for maintaining CC+OC dual-target plugins. Found "author once, convert at install time" as the dominant pattern.
+- **Marketplace migration proposal**: 6-phase plan for adding OC as a second publish target. **Reviewed → Revise** (2 blocking: hooks miscount, AGENTS.md test gap).
+- **Rules integration proposal**: 3-layer architecture for cross-tool rules delivery (SessionStart hook, OC rules, AGENTS.md). **Reviewed → Revise** (3 blocking: hook code/spec mismatch, fragile sed, test rigor).
+- **Executive summary**: Assessed project state — recommended starting with Phase 0 (AGENTS.md + skills portability validation) before building full infrastructure.
+
+Additional files generated:
+| `cdocs/reports/2026-03-14-multi-target-plugin-strategies.md` | Multi-target publishing strategies |
+| `cdocs/proposals/2026-03-14-multi-target-marketplace.md` | Marketplace migration proposal |
+| `cdocs/proposals/2026-03-14-cross-target-rules-integration.md` | Rules integration proposal |
+| `cdocs/reviews/2026-03-14-review-of-multi-target-marketplace.md` | Marketplace proposal review |
+| `cdocs/reviews/2026-03-14-cross-target-rules-review.md` | Rules proposal review |
+| `cdocs/reports/2026-03-14-multi-target-executive-summary.md` | Integrated executive summary |
+
+### Day 3 — Revision pass and verifiability assessment (2026-03-14, cont.)
+
+Comprehensive revision of both proposals addressing all review feedback (blocking and non-blocking):
+
+- **Marketplace proposal revised** (2 blocking + 10 non-blocking items addressed):
+  - Fixed hooks description (1 active, 1 unwired), added Phase 0 to wire path hook
+  - Added AGENTS.md integration tests with pass/fail criteria
+  - Fixed tool mapping inconsistency, model configurability, postinstall automation
+  - Cross-proposal coordination: defers to rules proposal for AGENTS.md
+
+- **Rules proposal revised** (3 blocking + 14 non-blocking items addressed):
+  - Added source-repo skip logic to hook script code
+  - Fixed frontmatter stripping (sed → awk), replaced python3 with jq
+  - Added pass/fail criteria to all 13 tests, added 3 negative tests
+  - Narrowed OC keywords, framed Layer 2 as experimental, added missing edge cases
+
+- **Verifiability assessment**: Found and fixed 2 implementation bugs during assessment:
+  1. sed command `'1{/^---$/d}; 1,/^---$/d'` only deleted opening `---`, not full frontmatter block → replaced with awk
+  2. Postinstall claimed `CDOCS_SKIP_POSTINSTALL` support but didn't implement the check → added env var guard
+
+- **Assessment scores**: Rules proposal 8/10 implementability (executable hook script, comprehensive tests). Marketplace proposal 6/10 (no build script code, only behavioral description).
+
+Additional files generated:
+| `cdocs/devlogs/2026-03-14-multi-target-marketplace-revision.md` | Marketplace revision devlog |
+| `cdocs/devlogs/2026-03-14-cross-target-rules-revision.md` | Rules revision devlog |
+| `cdocs/reports/2026-03-14-proposal-verifiability-assessment.md` | Verifiability assessment |
+
+Total: 16 reports/proposals/reviews/devlogs generated across 15 subagents over 3 sessions.
