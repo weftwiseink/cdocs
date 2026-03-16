@@ -55,7 +55,8 @@ Rules are delivered via three complementary layers with graceful degradation:
 
 1. **CC SessionStart hook** (external installs): A `SessionStart` hook reads all `rules/*.md` files from the plugin directory, strips YAML frontmatter, and injects the combined content as `additionalContext` at session start.
    This is the primary delivery mechanism for CC marketplace installs where `@`-imports in CLAUDE.md cannot resolve plugin-cache paths.
-   The hook skips injection in the source repo (where rules are already loaded via CLAUDE.md `@`-imports) by checking for `@plugins/cdocs/rules/` in the project's CLAUDE.md.
+   The hook skips injection in the source repo (where rules are already loaded via CLAUDE.md `@`-imports) by grepping for `@plugins/cdocs/rules/` in the project's CLAUDE.md.
+   This detection is best-effort: if imports are restructured, the hook may inject duplicate rules, causing slightly larger context but no incorrect behavior.
 
 2. **Agent path resolution**: Agents (nit-fix, triage, reviewer) try relative paths first (`rules/*.md` from the agent's directory), falling back to `plugins/cdocs/rules/*.md` for source-repo contexts.
    This is experimental belt-and-suspenders alongside the SessionStart hook.

@@ -47,7 +47,7 @@ Scaffold the CDocs documentation structure in the current project.
       ---
       ```
       Strip any existing YAML frontmatter from the source rule file before prepending the OC frontmatter.
-      Add a version comment after the frontmatter: `<!-- cdocs rules v0.1.0 - regenerate with /cdocs:init -->`
+      Add a version comment after the frontmatter: `<!-- cdocs rules vX.Y.Z - regenerate with /cdocs:init (use version from plugin.json) -->`
    c. The OC-enhanced frontmatter activates rules conditionally via the `opencode-rules` plugin: they load only when editing cdocs files or mentioning cdocs-specific terms.
 
 6. **AGENTS.md creation (cross-tool fallback):**
@@ -73,7 +73,7 @@ Scaffold the CDocs documentation structure in the current project.
      [Full content of frontmatter-spec.md, frontmatter stripped]
      <!-- cdocs-rules-end -->
      ```
-   - Add a version comment inside the delimiters: `<!-- cdocs rules v0.1.0 - regenerate with /cdocs:init -->`
+   - Add a version comment inside the delimiters: `<!-- cdocs rules vX.Y.Z - regenerate with /cdocs:init (use version from plugin.json) -->`
    - This is idempotent: running init multiple times updates the content between delimiters without duplication.
 
    > NOTE(claude-opus-4-6/cross-target-rules): The inlined content can drift from the source rule files if the plugin is updated but init is not re-run.

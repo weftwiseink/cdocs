@@ -26,8 +26,13 @@ for rule_file in "$RULES_DIR"/*.md; do
   [ -f "$rule_file" ] || continue
   BASENAME=$(basename "$rule_file" .md)
   CONTENT=$(cat "$rule_file")
-  # Strip entire YAML frontmatter block (content between first two --- lines)
-  CONTENT=$(echo "$CONTENT" | awk 'BEGIN{fm=0} /^---$/{fm++; next} fm>=2{print}')
+  # Strip YAML frontmatter if present (content between first two --- lines).
+  # Files without frontmatter pass through unchanged.
+  CONTENT=$(printf '%s\n' "$CONTENT" | awk '
+    BEGIN { fm=0 }
+    /^---$/ { fm++; next }
+    fm == 0 || fm >= 2 { print }
+  ')
   CONTEXT="${CONTEXT}
 
 ## [cdocs rule: ${BASENAME}]
@@ -38,6 +43,6 @@ done
 
 if [ -n "$CONTEXT" ]; then
   # Escape for JSON using jq (lighter than python3, commonly available)
-  ESCAPED=$(echo "$CONTEXT" | jq -Rs .)
+  ESCAPED=$(printf '%s\n' "$CONTEXT" | jq -Rs .)
   echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":${ESCAPED}}}"
 fi
