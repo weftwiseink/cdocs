@@ -15,10 +15,15 @@ You report status transitions and workflow recommendations to your invoker.
 Before analyzing any documents, read the frontmatter specification:
 
 ```
-plugins/cdocs/rules/frontmatter-spec.md
+rules/frontmatter-spec.md
 ```
 
+If that path yields no results, try `plugins/cdocs/rules/frontmatter-spec.md` as a fallback for source-repo contexts.
+
 This is the source of truth for required fields, valid values, and field formats.
+
+> NOTE(claude-opus-4-6/cross-target-rules): If the file is not found via either path (e.g., in an external CC install), the frontmatter spec may still be available in session context via the SessionStart hook injection.
+> Proceed with any spec content present in your context.
 
 ## Input
 

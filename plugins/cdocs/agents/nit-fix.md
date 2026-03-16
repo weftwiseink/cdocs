@@ -15,13 +15,17 @@ You do NOT have hardcoded knowledge of the conventions.
 
 Before processing any documents, discover and read all rule files:
 
-1. Use the Glob tool to find all files matching `plugins/cdocs/rules/*.md`.
+1. Use the Glob tool to find all files matching `rules/*.md` relative to this agent file's directory.
+   If that yields no results, try `plugins/cdocs/rules/*.md` as a fallback for source-repo contexts.
 2. Read each discovered rule file using the Read tool.
 3. Each rule file contains one or more conventions organized under `##` headings.
 4. Aggregate all conventions from all rule files into your working set.
 
 These files are the source of truth for all conventions you enforce.
-Adding a new rule file to `plugins/cdocs/rules/` extends your enforcement surface with no prompt changes.
+Adding a new rule file to `rules/` extends your enforcement surface with no prompt changes.
+
+> NOTE(claude-opus-4-6/cross-target-rules): If no rule files are found via Glob (e.g., in an external CC install where paths do not resolve), rules may still be available in session context via the SessionStart hook injection.
+> Proceed with any rules present in your context.
 
 ## Input
 
