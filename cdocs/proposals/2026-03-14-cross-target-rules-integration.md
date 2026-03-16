@@ -5,7 +5,7 @@ first_authored:
 task_list: marketplace/cross-target-rules
 type: proposal
 state: live
-status: review_ready
+status: implementation_wip
 tags: [architecture, rules, multi-target, opencode, portability, plugin-api]
 last_reviewed:
   status: revision_requested
