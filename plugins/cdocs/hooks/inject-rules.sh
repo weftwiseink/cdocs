@@ -28,6 +28,11 @@ for rule_file in "$RULES_DIR"/*.md; do
   CONTENT=$(cat "$rule_file")
   # Strip YAML frontmatter if present (content between first two --- lines).
   # Files without frontmatter pass through unchanged.
+  # FIXME: Replace this bash/awk script with a more robust JS/TS implementation
+  # after the multi-target marketplace proposal is complete. The awk pattern
+  # matching on /^---$/ also strips --- lines inside fenced code blocks,
+  # causing cosmetic degradation of template examples in frontmatter-spec.md.
+  # A proper parser (or at minimum code-block-fence tracking) would fix this.
   CONTENT=$(printf '%s\n' "$CONTENT" | awk '
     BEGIN { fm=0 }
     /^---$/ { fm++; next }
