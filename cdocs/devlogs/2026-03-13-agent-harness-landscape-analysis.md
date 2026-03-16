@@ -105,4 +105,20 @@ Additional files generated:
 | `cdocs/devlogs/2026-03-14-cross-target-rules-revision.md` | Rules revision devlog |
 | `cdocs/reports/2026-03-14-proposal-verifiability-assessment.md` | Verifiability assessment |
 
-Total: 16 reports/proposals/reviews/devlogs generated across 15 subagents over 3 sessions.
+### Day 4 — Compound-engineering amendment (2026-03-16)
+
+Investigated why the marketplace proposal prescribed a custom build script when the strategies report had already identified `compound-engineering-plugin` as a mature converter.
+
+**Root cause:** The strategies report treated compound-engineering as pattern validation (Sections 1, 4) but prescribed a custom script in its own "Recommended Strategy" (Section 8). The proposal faithfully followed Section 8 without questioning build-vs-buy. Neither the review nor verifiability assessment caught the disconnect.
+
+**Amendment applied:**
+- Marketplace proposal Phase 1 rewritten: compound-engineering for core conversion, thin <50 line wrapper for cdocs-specific post-processing (path rewriting, version sync)
+- Added verification-first step with fallback to custom script if tool doesn't work as described
+- Added "Use compound-engineering instead of custom build script" design decision
+- Simplified test plan (4 tests for wrapper post-processing instead of 7 for custom conversion)
+- Updated all downstream references (CI/CD, edge cases, verification methodology)
+
+Additional files generated:
+| `cdocs/devlogs/2026-03-16-marketplace-compound-engineering-amendment.md` | Amendment devlog |
+
+Total: 18 reports/proposals/reviews/devlogs generated across 17 subagents over 4 sessions.
