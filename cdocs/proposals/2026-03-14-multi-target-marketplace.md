@@ -6,28 +6,28 @@ task_list: marketplace/multi-target
 type: proposal
 state: live
 status: review_ready
-revision_round: 2
-tags: [architecture, multi-target, opencode, portability, build-system]
+revision_round: 3
+tags: [architecture, multi-target, opencode, portability, build-system, compound-engineering]
 last_reviewed:
   status: revision_requested
-  by: "@claude-opus-4-6"
-  at: 2026-03-14T18:00:00-07:00
-  round: 1
+  by: "@mjr"
+  at: 2026-03-16T00:00:00-07:00
+  round: 2
 ---
 
 # Multi-Target Marketplace: Publishing cdocs to Claude Code and OpenCode
 
 > BLUF: Extend the clauthier marketplace to publish cdocs for both Claude Code (CC) and OpenCode (OC) from a single canonical source.
 > CC remains the canonical authoring format.
-> A build script converts agents and hooks to OC format; skills and rules require no conversion.
+> The `compound-engineering-plugin` (`@every-env/compound-plugin`) converts agents to OC format; hooks are reimplemented by hand; skills and rules require no conversion.
 > The OC output lives in a generated `opencode/` directory within `plugins/cdocs/` and is committed as build artifacts.
 > Based on the [multi-target-plugin-strategies report](../reports/2026-03-14-multi-target-plugin-strategies.md), this follows the "author once, convert at install time" pattern proven by GSD and compound-engineering.
 
 ## Summary
 
-This proposal covers the full pipeline from CC-canonical sources to a working OC installation: repo structure changes, a TypeScript build script for agent frontmatter conversion, hook reimplementation strategy, rules integration via AGENTS.md and `.claude/rules/` compatibility paths, npm packaging, CI/CD, and testing.
+This proposal covers the full pipeline from CC-canonical sources to a working OC installation: repo structure changes, agent conversion via `compound-engineering-plugin` (an existing multi-target converter), hook reimplementation strategy, rules integration via AGENTS.md and `.claude/rules/` compatibility paths, npm packaging, CI/CD, and testing.
 
-The approach minimizes maintenance burden by keeping a single source of truth (CC format) and generating the OC target mechanically.
+The approach minimizes maintenance burden by keeping a single source of truth (CC format) and generating the OC target using an established ecosystem tool rather than a custom build script.
 Skills are the easiest layer: they work as-is in both tools.
 Rules are nearly as easy: OC reads `.claude/rules/` as a fallback.
 Agents require frontmatter conversion but the mapping is deterministic.
@@ -131,7 +131,7 @@ plugins/cdocs/
       cdocs-hooks.ts                # OC hook implementations (hand-written)
     package.json                    # npm manifest for OC distribution
   scripts/
-    build-opencode.ts               # Converter: CC agents -> OC agents (auto-discovers agents/*.md)
+    build-opencode.sh               # Thin wrapper: calls compound-engineering + cdocs-specific post-processing
 ```
 
 ### Layer-by-Layer Portability
@@ -205,11 +205,12 @@ permission:
 ---
 ```
 
-> NOTE(claude-opus-4-6/multi-target): Model IDs shown are current as of March 2026 and should be pulled from a configurable mapping in the build script rather than hardcoded.
-> The `anthropic/claude-3-5-haiku-20241022` ID for `haiku` is from late 2024 and may be outdated; the mapping should be updated when newer model versions are available.
+> NOTE(claude-opus-4-6/multi-target): Model IDs shown are current as of March 2026.
+> compound-engineering-plugin maintains its own model mapping which should be kept up to date.
+> The `anthropic/claude-3-5-haiku-20241022` ID for `haiku` is from late 2024 and may be outdated; verify compound-engineering's mapping when newer model versions are available.
 
-Key transformations:
-- `model` short alias expanded to full provider/model path (via configurable mapping)
+Key transformations (handled by compound-engineering-plugin):
+- `model` short alias expanded to full provider/model path
 - `tools` comma-separated string expanded to boolean object with OC tool names
 - `mode: subagent` added (all cdocs agents are subagents)
 - `permission` block added based on the tool set (agents with Edit get `edit: ask`)
@@ -343,10 +344,10 @@ OC output is generated, not maintained.
 ### Decision: Commit the generated `opencode/` output
 
 **Why:** Keeps the build output co-located with the source.
-Committing the generated output allows users to consume the OC format without running the build script and makes CI validation straightforward (build, diff, fail if dirty).
+Committing the generated output allows users to consume the OC format without running the wrapper script and makes CI validation straightforward (build, diff, fail if dirty).
 A separate repo would require cross-repo synchronization.
 
-If the generated output ever needs regeneration (e.g., OC changes its agent format), the fix path is always: update the build script, rebuild, commit.
+If the generated output ever needs regeneration (e.g., OC changes its agent format), the fix path is always: update compound-engineering (or the wrapper's post-processing), re-run, commit.
 Never manually edit files in `opencode/`.
 
 ### Decision: Hand-write OC hooks, do not attempt mechanical conversion
@@ -356,6 +357,22 @@ OC hooks are TypeScript plugin exports with typed event objects.
 The impedance mismatch is conceptual, not syntactic: translating one shell script line-by-line into TypeScript would produce unidiomatic, fragile code.
 The two hooks are small enough (73 and 18 lines of bash) that hand-writing the TypeScript equivalents is faster and produces better results.
 
+### Decision: Use compound-engineering-plugin for agent conversion instead of a custom build script
+
+**Why:** Based on research findings, the `compound-engineering-plugin` (`@every-env/compound-plugin`) is a mature ecosystem tool that handles agent frontmatter conversion from CC to OC format, including model mapping, tool expansion, and permission generation.
+The [multi-target strategies report](../reports/2026-03-14-multi-target-plugin-strategies.md) identified it as a proven converter used by GSD and other multi-target projects.
+Writing a custom ~100-200 line TypeScript build script to reimplement the same transformations is unnecessary when an existing tool already solves the problem.
+
+The rationale for build-vs-buy:
+- compound-engineering handles the deterministic frontmatter transformation (model aliases to full paths, tool names to boolean objects, permission block generation).
+- It supports 10+ targets beyond OC, giving us a future migration path if we target Codex, Gemini CLI, or Copilot.
+- Format evolution is handled upstream -- when OC changes its agent format, compound-engineering updates rather than our custom script.
+- A thin wrapper script (under 50 lines) handles the cdocs-specific concerns compound-engineering does not cover: relative path rewriting in agent bodies and version synchronization from `plugin.json`.
+
+> NOTE(claude-opus-4-6/multi-target): The compound-engineering-plugin's existence, star count, and CLI interface were identified via web research in a prior conversation.
+> These claims should be verified against the actual repository (`https://github.com/EveryInc/compound-engineering-plugin`) before implementation.
+> Phase 1 includes a verification step as its first action item.
+
 ### Decision: Do not switch the canonical format to AGENTS.md
 
 **Why:** Per the multi-target report's recommendation, the cost of maintaining both is low, and CC's plugin system, marketplace, `@`-mentions, and hook lifecycle all depend on `.claude/` conventions.
@@ -364,8 +381,8 @@ The project-level AGENTS.md (with inlined content for cross-tool safety) is owne
 
 ### Decision: Use Bun as the build runtime
 
-**Why:** The build script is a simple file-transformation pipeline (read YAML frontmatter, map fields, write output).
-Bun handles TypeScript natively without a compile step, is already in the OC ecosystem (OC auto-installs plugins via Bun), and is fast for scripting tasks.
+**Why:** compound-engineering-plugin runs via `bunx`, and the thin wrapper script benefits from Bun's fast startup.
+Bun is already in the OC ecosystem (OC auto-installs plugins via Bun) and handles TypeScript natively if the wrapper needs to be more than a shell script.
 
 ### Decision: Wire `validate-cdocs-edit-path.sh` in CC before porting to OC
 
@@ -378,13 +395,13 @@ This is a Phase 0 prerequisite.
 **Why:** The `triage.md` agent body references `plugins/cdocs/rules/frontmatter-spec.md` (absolute from repo root).
 This path is CC-relative (from the plugin cache root) and would not resolve in OC's agent loading context.
 Update the CC source to use a relative path (`./rules/frontmatter-spec.md` from agents/) that works in both environments.
-The build script verifies that referenced paths resolve in both contexts.
+The wrapper script's post-processing step verifies that referenced paths resolve in both contexts.
 
 ### Decision: Derive `package.json` version from `plugin.json` version
 
 **Why:** The CC plugin version lives in `.claude-plugin/plugin.json` (currently `0.1.0`).
 The OC npm package version in `opencode/package.json` must match.
-The build script copies the version field from `plugin.json` to `package.json` on each run.
+The wrapper script's post-processing step copies the version field from `plugin.json` to `package.json` on each run.
 This prevents version drift between the two manifests.
 
 ## Edge Cases / Challenging Scenarios
@@ -396,7 +413,7 @@ This path is CC-relative (from the plugin cache root).
 In OC, the agent is loaded from a different location.
 
 **Mitigation:** Update the CC source agent body to use relative paths (`./rules/frontmatter-spec.md` from agents/).
-The build script verifies that all path references in agent body content resolve in both the CC plugin directory tree and the OC output directory tree.
+The wrapper script's post-processing step verifies that all path references in agent body content resolve in both the CC plugin directory tree and the OC output directory tree.
 
 ### Skills referencing templates via relative paths
 
@@ -407,22 +424,22 @@ No action needed.
 
 ### OC version drift
 
-If the OC agent frontmatter format changes, the build script must be updated.
-The compound-engineering converter has faced this: OC's format has been stable since late 2025 but tool permission fields have evolved.
+If the OC agent frontmatter format changes, compound-engineering handles format evolution upstream -- we inherit format compatibility by updating the compound-engineering dependency rather than maintaining our own conversion logic.
+OC's format has been stable since late 2025 but tool permission fields have evolved.
 
-**Mitigation:** Pin the output format version in the build script.
+**Mitigation:** When OC changes its agent format, update to the latest compound-engineering version and regenerate.
 Add a CI check that validates the generated agent files against OC's expected schema (if one exists) or against a snapshot.
-If OC changes its agent format, update the build script and regenerate.
 Never manually edit files in `opencode/`.
-The fix path is always: update script, rebuild, commit.
+The fix path is always: update compound-engineering, re-run the wrapper, commit.
 
 ### CC `skills:` frontmatter in agents
 
 The `reviewer.md` agent declares `skills: - cdocs:review` in its frontmatter.
 OC does not have an equivalent frontmatter field for preloading skills into an agent context.
 
-**Mitigation:** The build script drops the `skills:` field.
+**Mitigation:** compound-engineering drops unrecognized CC-specific fields (including `skills:`) during conversion.
 In OC, skills are globally available via slash commands; the agent body instructions already tell the reviewer to "follow the preloaded `cdocs:review` skill," which works because OC makes skills available to all agents.
+If compound-engineering does not drop `skills:` automatically, the wrapper script handles it as a post-processing step.
 
 ### Hook input/output format differences
 
@@ -435,22 +452,21 @@ This is why mechanical conversion is not attempted.
 
 ## Test Plan
 
-### Unit Tests for the Build Script
+### Unit Tests for the Wrapper Script Post-Processing
 
-1. **Frontmatter conversion correctness:** Given a CC agent frontmatter YAML string, assert the OC output matches the expected structure (model mapping, tool expansion, permission generation, field omission).
-2. **Model mapping coverage:** Test all model aliases used in cdocs agents (`haiku`, `opus`) map to valid OC model paths.
-3. **Tool mapping coverage:** Test all CC tool names used in cdocs agents (`Read`, `Glob`, `Grep`, `Edit`, `Write`) map to correct OC tool flags per the mapping table (Read -> `read: true`, Edit -> `edit: true` + `permission: { edit: ask }`, Write -> `write: true` + `permission: { write: ask }`).
-4. **Body content passthrough:** Assert agent body markdown is identical before and after conversion.
-5. **Edge case: unknown model alias:** Assert the script passes through unrecognized model strings verbatim (future-proofing).
-6. **Version synchronization:** Assert the build script copies the version from `plugin.json` to `package.json`.
-7. **Path verification:** Assert the build script warns on agent body content containing absolute paths (e.g., `plugins/cdocs/...`) that should be relative.
+Since compound-engineering handles the core frontmatter transformation (model mapping, tool expansion, permission generation), unit tests focus on the cdocs-specific post-processing that the wrapper script performs:
+
+1. **Version synchronization:** Assert the wrapper copies the version from `plugin.json` to `package.json`.
+2. **Path rewriting:** Assert the wrapper rewrites absolute paths (e.g., `plugins/cdocs/rules/frontmatter-spec.md`) to relative paths in agent body content.
+3. **Path verification:** Assert the wrapper warns on agent body content containing unrewritten absolute paths.
+4. **Body content integrity:** Assert agent body markdown (minus rewritten paths) is otherwise identical before and after the wrapper runs.
 
 ### Integration Tests
 
-1. **Generated agent file validity:** After running the build script, validate each generated OC agent file has well-formed YAML frontmatter.
-2. **Idempotency:** Running the build script twice produces identical output.
+1. **Generated agent file validity:** After running the wrapper script, validate each generated OC agent file has well-formed YAML frontmatter.
+2. **Idempotency:** Running the wrapper script twice produces identical output.
 3. **Dirty-check in CI:** After building, `git diff --exit-code opencode/` passes (no uncommitted changes to generated files).
-4. **Auto-discovery:** Adding a new `.md` file to `agents/` and rebuilding produces a corresponding OC agent file in `opencode/agents/`.
+4. **Auto-discovery:** Adding a new `.md` file to `agents/` and rebuilding via compound-engineering produces a corresponding OC agent file in `opencode/agents/`.
 
 ### AGENTS.md Integration Tests
 
@@ -488,7 +504,7 @@ This is why mechanical conversion is not attempted.
 
 The primary verification loop:
 
-1. Run `bun run scripts/build-opencode.ts` and confirm clean exit.
+1. Run the wrapper script (`scripts/build-opencode.sh`) and confirm clean exit (compound-engineering conversion + cdocs post-processing).
 2. Diff `opencode/agents/*.md` against expected snapshots.
 3. In a test project, install the OC plugin:
    - Copy `opencode/agents/` to `.opencode/agents/`
@@ -523,30 +539,41 @@ Editing a cdocs file proceeds normally.
 Do not modify agent files.
 This is purely a `hooks.json` wiring change.
 
-### Phase 1: Build Script and Agent Conversion
+### Phase 1: Agent Conversion via compound-engineering-plugin
 
-**Scope:** Create the build script that reads CC agents and writes OC agents.
+**Scope:** Use the existing `compound-engineering-plugin` (`@every-env/compound-plugin`) to convert CC agents to OC format, with a thin wrapper script for cdocs-specific post-processing.
 
-1. Create `plugins/cdocs/scripts/build-opencode.ts`:
-   - Auto-discover all `agents/*.md` files (adding a new CC agent automatically produces an OC equivalent after rebuild).
-   - Parse YAML frontmatter from each agent using a YAML library (e.g., `yaml` npm package).
-   - Apply model mapping via a configurable mapping object (e.g., `haiku` -> `anthropic/claude-3-5-haiku-20241022`, `opus` -> `anthropic/claude-opus-4-6-20261022`). Add a comment: "Update model versions as new releases become available."
-   - Expand `tools` string to boolean object using the CC-to-OC tool mapping table defined in Layer 3.
-   - Add `mode: subagent` and `permission` block.
-   - Drop `name` and `skills` fields.
-   - Write converted files to `opencode/agents/`.
-   - Copy agent body content verbatim.
-   - Copy version from `.claude-plugin/plugin.json` to `opencode/package.json`.
-   - Verify that agent body path references resolve in both CC and OC contexts (warn on absolute paths).
-2. Create `opencode/` directory structure.
-3. Run the script and verify output for all three agents.
-4. Add unit tests for frontmatter conversion.
+> NOTE(claude-opus-4-6/multi-target): The `compound-engineering-plugin` CLI syntax and capabilities described below are based on prior ecosystem research.
+> The exact CLI interface (`bunx @every-env/compound-plugin convert ...`) should be verified against compound-engineering's current documentation before implementation begins.
+> If the tool does not exist or does not work as described, fall back to the custom build script approach described in the [strategies report](../reports/2026-03-14-multi-target-plugin-strategies.md) Section 8.
 
-**Success criteria:** `bun run scripts/build-opencode.ts` produces three valid OC agent files.
+1. **Verify compound-engineering-plugin works for cdocs (first step).**
+   Run `bunx @every-env/compound-plugin convert ./plugins/cdocs --to opencode` and inspect the output.
+   Confirm the tool:
+   - Exists and installs successfully.
+   - Converts agent frontmatter (model mapping, tool expansion, permission generation).
+   - Produces valid OC agent markdown files.
+   If verification fails, document the failure and fall back to the custom build script approach from the strategies report.
+
+2. **Create a thin wrapper script** at `plugins/cdocs/scripts/build-opencode.sh`:
+   - Invoke compound-engineering to perform the core conversion.
+   - Apply cdocs-specific post-processing that compound-engineering may not handle:
+     - **Relative path rewriting** in agent body content (e.g., rewrite `plugins/cdocs/rules/frontmatter-spec.md` to `./rules/frontmatter-spec.md` from agents/).
+     - **Version synchronization** from `.claude-plugin/plugin.json` to `opencode/package.json`.
+     - **Validation** that agent body path references resolve in both CC and OC contexts (warn on absolute paths).
+   - The wrapper should be short (under 50 lines of shell or TypeScript) -- compound-engineering handles the heavy lifting.
+
+3. Create `opencode/` directory structure.
+4. Run the wrapper and verify output for all three agents.
+5. Add tests for the cdocs-specific post-processing (not for the core conversion, which is compound-engineering's responsibility).
+
+**Success criteria:** The wrapper script produces three valid OC agent files.
 Diffing the generated frontmatter against hand-crafted expected output shows no differences.
+The wrapper is under 50 lines (excluding comments); the core conversion is delegated to compound-engineering.
 
 **Constraints:** Do not modify any CC-format files (except updating agent body paths from absolute to relative if needed).
 Do not modify skills or rules.
+Do not reimplement functionality that compound-engineering already provides.
 
 ### Phase 2: AGENTS.md and Rules Integration
 
@@ -582,14 +609,14 @@ The AGENTS.md is additive only.
 The hook correctly identifies missing required fields.
 Path restriction blocks edits to non-cdocs files.
 
-**Constraints:** This is hand-written code, not generated by the build script.
+**Constraints:** This is hand-written code, not generated by compound-engineering or the wrapper script.
 Keep the implementation minimal: match CC hook behavior, do not add new functionality.
 
 ### Phase 4: npm Packaging
 
 **Scope:** Create the npm package manifest and publish workflow.
 
-1. Create `opencode/package.json` with appropriate metadata (version derived from `plugin.json` by the build script).
+1. Create `opencode/package.json` with appropriate metadata (version derived from `plugin.json` by the wrapper script).
 2. Add a `files` field to control what ships in the package.
 3. Implement the postinstall script that copies skills and rules (with `CDOCS_SKIP_POSTINSTALL` opt-out).
 4. Test local installation: `npm pack` in `opencode/`, then reference the tarball in a test project's `opencode.json`.
@@ -606,7 +633,7 @@ The postinstall copies skills and rules to the correct paths.
 **Scope:** Automate build, validation, and optionally publishing.
 
 1. Add a GitHub Actions workflow:
-   - Step 1: `bun run scripts/build-opencode.ts` (build).
+   - Step 1: Run `scripts/build-opencode.sh` (compound-engineering conversion + cdocs post-processing).
    - Step 2: `git diff --exit-code opencode/` (dirty check: fail if generated files are stale).
    - Step 3: YAML lint on generated agent files.
    - Step 4: (Optional) `npm pack` in `opencode/` (package validation).
@@ -623,7 +650,7 @@ Tagged releases produce a valid npm package.
 **Scope:** Update the cdocs README and clauthier CLAUDE.md to document multi-target support.
 
 1. Add an "OpenCode Installation" section to `plugins/cdocs/README.md`.
-2. Document the build script usage, including auto-discovery of new agents.
+2. Document the wrapper script usage (compound-engineering invocation + post-processing), including auto-discovery of new agents.
 3. Add a brief note in `CLAUDE.md` about the multi-target structure.
 4. Add a `.gitattributes` or comment header in generated files marking them as auto-generated.
 
