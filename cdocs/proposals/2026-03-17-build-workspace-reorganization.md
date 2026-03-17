@@ -184,27 +184,10 @@ jobs:
         working-directory: build/cdocs/opencode
         run: npm pack --dry-run
 
-  publish:
-    needs: build-and-validate
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          registry-url: "https://registry.npmjs.org"
-      - run: npm ci
-      - run: npm run build:cdocs
-      - name: Publish to npm
-        working-directory: build/cdocs/opencode
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        continue-on-error: true  # Skip if version already published
 ```
 
-> NOTE: The publish job is optional and gated on `NPM_TOKEN` being configured. Until that is set up, CI still validates the build succeeds.
+Publishing is manual via `npm publish` from `build/cdocs/opencode/` after a successful build.
+Automated CI publishing can be added later if release cadence warrants it.
 
 ### Documentation updates
 
@@ -316,7 +299,6 @@ Extending this to `rmSync` the entire `build/cdocs/opencode/` at the top of `mai
   - Replace `tsx plugins/cdocs/scripts/build-opencode.ts` with `npm ci && npm run build:cdocs`.
   - Remove the dirty-check step.
   - Update validation paths from `plugins/cdocs/opencode/` to `build/cdocs/opencode/`.
-  - Add an optional publish job (gated on `NPM_TOKEN` secret and main branch push).
   - Update trigger paths to include `scripts/build-opencode.ts`.
 - Update `CLAUDE.md` "Multi-Target Marketplace" section with new paths and commands.
 - Update `plugins/cdocs/README.md` "Building OC artifacts from source" and "OpenCode Installation" sections.
@@ -329,4 +311,4 @@ Extending this to `rmSync` the entire `build/cdocs/opencode/` at the top of `mai
 
 ## Open Questions
 
-1. **Publish trigger:** Should CI publish on every push to main that touches plugin source, or should publishing be manual / tag-gated? The proposal includes an auto-publish-on-main approach with `continue-on-error` for already-published versions, but tag-gated publishing (e.g., `v0.2.0-cdocs-oc`) would give more control.
+None remaining. Publishing is manual for now; automated CI publishing deferred to a future proposal if release cadence warrants it.
