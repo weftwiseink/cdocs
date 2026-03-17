@@ -5,7 +5,7 @@ first_authored:
 task_list: marketplace/multi-target
 type: devlog
 state: live
-status: wip
+status: review_ready
 tags: [multi-target, opencode, build-system, hooks, npm, ci]
 ---
 
@@ -26,7 +26,7 @@ Seven phases executed sequentially, with a commit after each phase:
 - [x] Phase 3: Hand-write OC hooks plugin (frontmatter validation only)
 - [x] Phase 4: npm packaging (package.json, postinstall, npm pack test)
 - [x] Phase 5: CI/CD (GitHub Actions workflow, dirty check)
-- [ ] Phase 6: Documentation and README updates
+- [x] Phase 6: Documentation and README updates
 
 Each phase is reviewed via `/cdocs:review` before proceeding.
 
@@ -83,4 +83,75 @@ Confirmed AGENTS.md exists with @-imports and rules files are in place.
 
 ## Verification
 
-(Updated as phases complete.)
+### Phase 0: Hook Testing
+
+```
+# Main session (no agent_type) -> allowed (RC=0)
+echo '{"tool_input":{"file_path":"/some/random/file.txt"}}' | bash validate-cdocs-edit-path.sh; RC=0
+
+# Triage agent editing cdocs file -> allowed (RC=0)
+echo '{"agent_type":"triage","tool_input":{"file_path":"cdocs/devlogs/test.md"}}' | bash validate-cdocs-edit-path.sh; RC=0
+
+# Triage agent editing non-cdocs file -> blocked (RC=2)
+echo '{"agent_type":"triage","tool_input":{"file_path":"/some/random/file.txt"}}' | bash validate-cdocs-edit-path.sh; RC=2
+
+# Non-cdocs agent -> allowed (RC=0)
+echo '{"agent_type":"some-other-agent","tool_input":{"file_path":"/some/random/file.txt"}}' | bash validate-cdocs-edit-path.sh; RC=0
+```
+
+hooks.json validates as valid JSON with 3 hook entries (SessionStart, PreToolUse, PostToolUse).
+
+### Phase 1: Build Script
+
+```
+build-opencode: Starting CC-to-OC conversion...
+  Plugin root: /var/home/mjr/code/weft/clauthier/plugins/cdocs
+  Output dir:  /var/home/mjr/code/weft/clauthier/plugins/cdocs/opencode
+  Version:     0.1.0
+  Converting 3 agents...
+    nit-fix.md, reviewer.md, triage.md
+  Copying skills... Copying rules...
+  Generating package.json...
+build-opencode: Done. Agents converted: 3
+```
+
+Idempotency: running twice produces identical output (diff RC=0).
+Path rewriting: no `plugins/cdocs/` paths remain in generated agents.
+CC source agents: unchanged (still have original `plugins/cdocs/` paths).
+
+### Phase 2: Rules Integration
+
+Verified:
+- `plugins/cdocs/AGENTS.md` exists with 3 @-imports
+- 3 rule files exist in `plugins/cdocs/rules/`
+- Rules copied to `opencode/rules/` by build script
+
+### Phase 3: OC Hooks Plugin
+
+Created `opencode/plugins/cdocs-hooks.ts` with `tool.execute.after` handler.
+Structural validation only (no live OC testing available in this environment).
+
+### Phase 4: npm Packaging
+
+```
+npm pack --dry-run:
+  @weft/cdocs-opencode@0.1.0
+  24 files, 26.2 kB packed / 75.0 kB unpacked
+  All expected files present (agents, plugins, rules, skills, scripts, package.json)
+```
+
+### Phase 5: CI/CD
+
+`.github/workflows/opencode-build.yml` created with:
+- Build script execution
+- Dirty check (git diff --exit-code)
+- Agent frontmatter YAML lint
+- npm pack validation
+- Path filter on `plugins/cdocs/**`
+- `continue-on-error: true`
+
+### Phase 6: Documentation
+
+- README updated with OpenCode Installation section, PreToolUse hook docs, build instructions
+- CLAUDE.md updated with Multi-Target Marketplace section
+- .gitattributes marks generated files as linguist-generated

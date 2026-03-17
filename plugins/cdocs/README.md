@@ -89,7 +89,63 @@ The hook was designed as a temporary workaround; the manifest approach restores 
 ## Hooks
 
 - **SessionStart:** Injects rule file content as `additionalContext` for CC external installs. Skips injection in the source repo. See "Rules Integration" above.
+- **PreToolUse (Write|Edit):** Restricts cdocs subagents (triage, nit-fix, reviewer) to editing only `cdocs/` document directories. Main session is unaffected. CC-only (OC lacks agent identity in events).
 - **PostToolUse (Write|Edit):** Validates frontmatter on cdocs files. Informational warnings only (non-blocking).
+
+## OpenCode Installation
+
+CDocs is also available for [OpenCode](https://opencode.ai) via an npm package.
+
+### Install via npm
+
+```bash
+npm install @weft/cdocs-opencode
+```
+
+The postinstall script copies skills and rules to project paths automatically.
+Set `CDOCS_SKIP_POSTINSTALL=1` to skip the copy step.
+
+Then add the plugin to your `opencode.json`:
+
+```json
+{
+  "plugin": ["@weft/cdocs-opencode"]
+}
+```
+
+### Alternative: compound-engineering
+
+Users who prefer to deploy CC plugins directly to their OC config directory (`~/.config/opencode/`) can use [compound-engineering-plugin](https://github.com/every-env/compound-plugin) as a user-side install tool.
+
+### What works in OpenCode
+
+| Feature | OC Support | Notes |
+|---------|-----------|-------|
+| Skills | Full | All 10 skills work as-is via `.opencode/skills/` or `.claude/skills/` |
+| Rules | Full | Loaded via `.claude/rules/` (OC reads this natively) |
+| Agents | Full | 3 agents converted to OC frontmatter format |
+| Hooks (frontmatter validation) | Full | Ported as `tool.execute.after` handler in TypeScript |
+| Hooks (path restriction) | Not available | OC events lack agent identity; cannot scope to cdocs subagents |
+| Hooks (rule injection) | Not needed | OC reads `.claude/rules/` natively |
+
+### Building OC artifacts from source
+
+The generated `opencode/` directory is committed as build artifacts.
+To regenerate after modifying CC source files:
+
+```bash
+npx tsx plugins/cdocs/scripts/build-opencode.ts
+# or: bun run plugins/cdocs/scripts/build-opencode.ts
+```
+
+Do not manually edit files in `opencode/`.
+The fix path is always: update the build script or CC sources, re-run, commit.
+
+The build script:
+- Converts CC agent frontmatter to OC format (model mapping, tool expansion, permission generation)
+- Copies skills and rules into the `opencode/` bundle for npm packaging
+- Syncs the version from `.claude-plugin/plugin.json` to `opencode/package.json`
+- Auto-discovers new agents: adding a `.md` file to `agents/` and rebuilding produces a corresponding OC agent
 
 ## Document Types
 

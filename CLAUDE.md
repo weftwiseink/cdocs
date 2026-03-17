@@ -32,3 +32,15 @@ cdocs rules are delivered via three layers with graceful degradation:
 3. **AGENTS.md** — cross-tool fallback at `plugins/cdocs/AGENTS.md` using `@`-imports; `/cdocs:init` creates project-level inlined version.
 
 See `plugins/cdocs/README.md` "Rules Integration" for full details.
+
+### Multi-Target Marketplace
+
+The cdocs plugin publishes for both Claude Code and OpenCode from a single canonical source.
+CC is the authoring format; a build script generates OC artifacts in `plugins/cdocs/opencode/`.
+
+- **Build script**: `npx tsx plugins/cdocs/scripts/build-opencode.ts`
+- **Generated output**: `plugins/cdocs/opencode/` (committed, never edit manually)
+- **OC npm package**: `@weft/cdocs-opencode`
+- **CI**: `.github/workflows/opencode-build.yml` validates generated files are up to date
+
+See `plugins/cdocs/README.md` "OpenCode Installation" for user-facing docs.
