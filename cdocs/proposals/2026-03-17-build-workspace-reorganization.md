@@ -7,6 +7,11 @@ type: proposal
 state: live
 status: review_ready
 tags: [architecture, build-system, workspace, gitignore, ci, npm]
+last_reviewed:
+  status: accepted
+  by: "@claude-opus-4-6"
+  at: 2026-03-17T14:00:00-07:00
+  round: 1
 ---
 
 # Build Workspace Reorganization
@@ -86,8 +91,8 @@ Add a root `package.json` with npm scripts wrapping the build:
 {
   "private": true,
   "scripts": {
-    "build": "npx tsx scripts/build-opencode.ts",
-    "build:cdocs": "npx tsx scripts/build-opencode.ts cdocs"
+    "build": "tsx scripts/build-opencode.ts",
+    "build:cdocs": "tsx scripts/build-opencode.ts cdocs"
   },
   "devDependencies": {
     "tsx": "^4.0.0",
@@ -115,6 +120,8 @@ Add a root `tsconfig.json` providing type checking for build scripts:
 
 > NOTE: This `tsconfig.json` scopes to `scripts/` only. It does not cover plugin source files (which are markdown, shell scripts, and the hand-written OC hooks TS file).
 
+> NOTE: The generated `package-lock.json` should be committed for reproducible `npm ci` builds in CI.
+
 ### Build script relocation and refactoring
 
 Move `plugins/cdocs/scripts/build-opencode.ts` to `scripts/build-opencode.ts`.
@@ -124,7 +131,7 @@ Key changes to the script:
 1. **Output directory**: Change from `join(PLUGIN_ROOT, "opencode")` to `join(REPO_ROOT, "build", pluginName, "opencode")`.
 2. **Plugin root resolution**: Accept a plugin name argument (defaulting to `cdocs`) and resolve `plugins/<name>/` from the repo root.
 3. **Repo root**: Resolve from the script's own location (`resolve(dirname(...), "..")`).
-4. **OC hooks file**: The hand-written `cdocs-hooks.ts` currently lives at `plugins/cdocs/opencode/plugins/cdocs-hooks.ts`. Since `opencode/` is being gitignored, this file needs a canonical home. Move it to `plugins/cdocs/opencode-src/plugins/cdocs-hooks.ts` (or similar) and have the build script copy it into the output. This is the one file in the current `opencode/` directory that is hand-written, not generated.
+4. **OC hooks file**: The hand-written `cdocs-hooks.ts` currently lives at `plugins/cdocs/opencode/plugins/cdocs-hooks.ts`. Since `opencode/` is being gitignored, this file needs a canonical home. Move it to `plugins/cdocs/hooks/cdocs-hooks.ts` and have the build script copy it into the output. This is the one file in the current `opencode/` directory that is hand-written, not generated.
 
 ### OC hooks file relocation
 
@@ -273,15 +280,15 @@ Extending this to `rmSync` the entire `build/cdocs/opencode/` at the top of `mai
 **What:**
 - Add root `package.json` with `build` and `build:cdocs` npm scripts.
 - Add root `tsconfig.json` scoped to `scripts/`.
-- Move `plugins/cdocs/scripts/build-opencode.ts` to `scripts/build-opencode.ts`.
+- Move `plugins/cdocs/scripts/build-opencode.ts` to `scripts/build-opencode.ts` (clears `plugins/cdocs/scripts/` for plugin-specific scripts only).
+- Move `plugins/cdocs/opencode/scripts/postinstall.js` to `plugins/cdocs/scripts/postinstall.js`.
+- Move `plugins/cdocs/opencode/plugins/cdocs-hooks.ts` to `plugins/cdocs/hooks/cdocs-hooks.ts`.
 - Update the build script to:
   - Accept a plugin name argument (default: `cdocs`).
   - Resolve plugin root from repo root as `plugins/<name>/`.
   - Output to `build/<name>/opencode/`.
   - Clean the entire output directory at the start.
-- Move `plugins/cdocs/opencode/plugins/cdocs-hooks.ts` to `plugins/cdocs/hooks/cdocs-hooks.ts`.
-- Move `plugins/cdocs/opencode/scripts/postinstall.js` to `plugins/cdocs/scripts/postinstall.js` (if not already there -- verify current state).
-- Update the build script to copy `cdocs-hooks.ts` and `postinstall.js` from their canonical locations.
+  - Copy `cdocs-hooks.ts` and `postinstall.js` from their canonical locations.
 - Add `build/` to `.gitignore`.
 - Remove or simplify `.gitattributes` (remove `linguist-generated` markers for `plugins/cdocs/opencode/`).
 - Delete `plugins/cdocs/opencode/` (the committed generated directory).
