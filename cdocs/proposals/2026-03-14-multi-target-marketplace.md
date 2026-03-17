@@ -5,7 +5,7 @@ first_authored:
 task_list: marketplace/multi-target
 type: proposal
 state: live
-status: review_ready
+status: implementation_wip
 revision_round: 5
 tags: [architecture, multi-target, opencode, portability, build-system]
 last_reviewed:

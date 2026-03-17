@@ -1,5 +1,5 @@
 {
-  "description": "CDocs hooks: frontmatter validation and rule injection",
+  "description": "CDocs hooks: frontmatter validation, rule injection, and path restriction",
   "hooks": {
     "SessionStart": [
       {
@@ -7,6 +7,18 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/inject-rules.sh",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/validate-cdocs-edit-path.sh",
             "timeout": 3
           }
         ]
