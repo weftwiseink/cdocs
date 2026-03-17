@@ -23,7 +23,7 @@ Seven phases executed sequentially, with a commit after each phase:
 - [x] Phase 0: Wire path-restriction hook with `agent_type` guard in CC
 - [x] Phase 1: Custom build script for CC-to-OC agent conversion
 - [x] Phase 2: Verify existing AGENTS.md and rules integration (verification-only, no changes)
-- [ ] Phase 3: Hand-write OC hooks plugin (frontmatter validation only)
+- [x] Phase 3: Hand-write OC hooks plugin (frontmatter validation only)
 - [ ] Phase 4: npm packaging (package.json, postinstall, npm pack test)
 - [ ] Phase 5: CI/CD (GitHub Actions workflow, dirty check)
 - [ ] Phase 6: Documentation and README updates
