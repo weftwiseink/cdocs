@@ -5,7 +5,7 @@ first_authored:
 task_list: marketplace/multi-target
 type: proposal
 state: live
-status: implementation_wip
+status: results_accepted
 revision_round: 5
 tags: [architecture, multi-target, opencode, portability, build-system]
 last_reviewed:
@@ -303,7 +303,7 @@ The generated `opencode/package.json`:
 
 ```json
 {
-  "name": "@weft/cdocs-opencode",
+  "name": "@weftwise/cdocs-opencode",
   "version": "0.1.0",
   "description": "CDocs documentation framework for OpenCode",
   "main": "plugins/cdocs-hooks.ts",
@@ -341,7 +341,7 @@ Users install via:
 ```json
 // In their opencode.json:
 {
-  "plugin": ["@weft/cdocs-opencode"]
+  "plugin": ["@weftwise/cdocs-opencode"]
 }
 ```
 
@@ -669,7 +669,7 @@ Keep the implementation minimal: match CC hook behavior, do not add new function
 2. Add a `files` field to control what ships in the package.
 3. Implement the postinstall script that copies skills and rules (with `CDOCS_SKIP_POSTINSTALL` opt-out).
 4. Test local installation: `npm pack` in `opencode/`, then reference the tarball in a test project's `opencode.json`.
-5. Set up npm publishing (scoped under `@weft`).
+5. Set up npm publishing (scoped under `@weftwise`).
 
 **Success criteria:** `npm pack` produces a valid tarball.
 A test project can reference the local tarball and OC loads the plugin, agents, and hooks.

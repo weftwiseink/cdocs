@@ -40,7 +40,7 @@ CC is the authoring format; a build script generates OC artifacts in `plugins/cd
 
 - **Build script**: `npx tsx plugins/cdocs/scripts/build-opencode.ts`
 - **Generated output**: `plugins/cdocs/opencode/` (committed, never edit manually)
-- **OC npm package**: `@weft/cdocs-opencode`
+- **OC npm package**: `@weftwise/cdocs-opencode`
 - **CI**: `.github/workflows/opencode-build.yml` validates generated files are up to date
 
 See `plugins/cdocs/README.md` "OpenCode Installation" for user-facing docs.

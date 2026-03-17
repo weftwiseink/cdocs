@@ -2,7 +2,7 @@
 /**
  * postinstall.js — Copy cdocs skills and rules to project paths on npm install.
  *
- * This script runs after `npm install @weft/cdocs-opencode` and copies:
+ * This script runs after `npm install @weftwise/cdocs-opencode` and copies:
  * - skills/ -> .opencode/skills/cdocs/ (or .claude/skills/cdocs/)
  * - rules/ -> .claude/rules/
  *

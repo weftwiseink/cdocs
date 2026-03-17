@@ -140,7 +140,7 @@ Structural validation only (no live OC testing available in this environment).
 
 ```
 npm pack --dry-run:
-  @weft/cdocs-opencode@0.1.0
+  @weftwise/cdocs-opencode@0.1.0
   24 files, 26.2 kB packed / 75.0 kB unpacked
   All expected files present (agents, plugins, rules, skills, scripts, package.json)
 ```

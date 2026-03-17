@@ -256,7 +256,7 @@ function copyDir(src: string, dest: string): void {
 
 function generatePackageJson(version: string): object {
   return {
-    name: "@weft/cdocs-opencode",
+    name: "@weftwise/cdocs-opencode",
     version,
     description: "CDocs documentation framework for OpenCode",
     main: "plugins/cdocs-hooks.ts",

@@ -99,7 +99,7 @@ CDocs is also available for [OpenCode](https://opencode.ai) via an npm package.
 ### Install via npm
 
 ```bash
-npm install @weft/cdocs-opencode
+npm install @weftwise/cdocs-opencode
 ```
 
 The postinstall script copies skills and rules to project paths automatically.
@@ -109,7 +109,7 @@ Then add the plugin to your `opencode.json`:
 
 ```json
 {
-  "plugin": ["@weft/cdocs-opencode"]
+  "plugin": ["@weftwise/cdocs-opencode"]
 }
 ```
 

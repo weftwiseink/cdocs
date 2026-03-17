@@ -1,5 +1,5 @@
 {
-  "name": "@weft/cdocs-opencode",
+  "name": "@weftwise/cdocs-opencode",
   "version": "0.1.0",
   "description": "CDocs documentation framework for OpenCode",
   "main": "plugins/cdocs-hooks.ts",

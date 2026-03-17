@@ -496,7 +496,7 @@ claude plugin install cdocs@clauthier --scope project
 For users installing for OpenCode:
 ```bash
 # Option A: npm package (when published)
-# In opencode.json: { "plugin": ["@weft/cdocs-opencode"] }
+# In opencode.json: { "plugin": ["@weftwise/cdocs-opencode"] }
 
 # Option B: Manual setup
 git clone https://github.com/weftwiseink/clauthier
