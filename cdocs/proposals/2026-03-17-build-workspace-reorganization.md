@@ -5,40 +5,328 @@ first_authored:
 task_list: marketplace/build-workspace
 type: proposal
 state: live
-status: request_for_proposal
-tags: [architecture, build-system, workspace, deduplication, typescript]
+status: review_ready
+tags: [architecture, build-system, workspace, gitignore, ci, npm]
 ---
 
 # Build Workspace Reorganization
 
-> BLUF(mjr+claude-opus-4-6/build-workspace): Move build artifacts out of `plugins/cdocs/` into a top-level `build/` target, eliminate duplicated skills/rules in the committed output, and add a TypeScript workspace configuration to give the build script a proper execution context.
+> BLUF(mjr+claude-opus-4-6/build-workspace): Move OC build output from committed `plugins/cdocs/opencode/` to gitignored `build/cdocs/opencode/`, add root `package.json` + `tsconfig.json` for build tooling, relocate the build script to `scripts/build-opencode.ts`, and replace the CI dirty-check with a build+validate+publish workflow.
+> This eliminates the duplication of skills/rules in version control while preserving them in the npm tarball for standalone installs.
+> The `build/<plugin>/opencode/` directory structure accommodates future plugins.
 >
-> - **Motivated By:** `cdocs/proposals/2026-03-14-multi-target-marketplace.md` (results_accepted) — the current implementation commits generated OC artifacts (including full copies of skills and rules) inside `plugins/cdocs/opencode/`, creating duplication and coupling build output to plugin source.
+> - **Motivated By:** `cdocs/proposals/2026-03-14-multi-target-marketplace.md` (results_accepted) -- the current implementation commits generated OC artifacts inside `plugins/cdocs/opencode/`, coupling build output to plugin source.
+> - **Key decisions already made:** Build artifacts are gitignored (not committed). Tooling is npm + tsx (no bun dependency). Skills/rules are bundled in the npm tarball. Multi-plugin ready via `build/<plugin>/opencode/` pattern.
 
 ## Objective
 
-The multi-target marketplace implementation placed the `opencode/` build output inside `plugins/cdocs/`, co-located with canonical source files.
-This creates three problems:
+Separate build output from plugin source so that:
 
-1. **Duplication:** Skills and rules are copied verbatim into `opencode/skills/` and `opencode/rules/`, doubling the file count for identical content.
-2. **Source/output coupling:** Build artifacts live alongside source files, making it unclear what is canonical vs generated (despite `.gitattributes` markers).
-3. **No build context:** The build script (`plugins/cdocs/scripts/build-opencode.ts`) runs via `npx tsx` with no `tsconfig.json`, no workspace declaration, and no defined dependency scope.
+1. Generated OC artifacts (agents, skills, rules, package.json) are not committed to version control.
+2. The build script has a proper execution context (root `package.json`, `tsconfig.json`).
+3. The directory structure supports adding future plugins without restructuring.
+4. CI builds and optionally publishes the npm package instead of enforcing a dirty check on committed artifacts.
 
-## Scope
+## Background
 
-The full proposal should explore:
+The multi-target marketplace proposal (`2026-03-14-multi-target-marketplace.md`, results_accepted) established the CC-to-OC build pipeline.
+Its implementation placed the generated `opencode/` directory inside `plugins/cdocs/`, committed to git, with a CI dirty check to keep it in sync.
 
-- Moving `plugins/cdocs/opencode/` to `build/cdocs/opencode/` (or similar top-level target).
-- Moving `plugins/cdocs/scripts/build-opencode.ts` to a top-level `scripts/` or workspace package.
-- Adding a root `tsconfig.json` and `package.json` with workspace declarations.
-- Whether skills/rules should be symlinked, referenced, or omitted from the committed build output (npm `postinstall` can still copy them at install time from the canonical source).
-- Updating CI (`.github/workflows/opencode-build.yml`) and `.gitattributes` for the new paths.
-- Updating `CLAUDE.md` build instructions and `plugins/cdocs/README.md` references.
-- Whether the npm package should continue including skills/rules in the tarball or resolve them at postinstall time from the plugin source tree.
+This worked as a pragmatic first pass, but creates ongoing friction:
+
+- **24 generated files committed** alongside canonical source files, distinguished only by `.gitattributes` `linguist-generated` markers and a "DO NOT EDIT" comment.
+- **Skills and rules are fully duplicated** in version control: `plugins/cdocs/skills/` (canonical) and `plugins/cdocs/opencode/skills/` (generated copy). Same for `rules/`.
+- **The build script** (`plugins/cdocs/scripts/build-opencode.ts`) runs via `npx tsx` with no `tsconfig.json`, no type checking, and no declared dependencies.
+- **CI validates staleness** rather than building fresh, which is fragile (developers must remember to regenerate and commit).
+
+### Current file layout (relevant parts)
+
+```
+plugins/cdocs/
+  agents/            # CC canonical agents
+  skills/            # CC canonical skills
+  rules/             # CC canonical rules
+  scripts/
+    build-opencode.ts  # Build script (tsx)
+  opencode/          # GENERATED, committed
+    agents/          # Converted OC agents
+    skills/          # Copy of skills/
+    rules/           # Copy of rules/
+    plugins/         # OC hooks plugin (hand-written)
+    scripts/         # postinstall.js
+    package.json     # Generated
+```
+
+### Target file layout
+
+```
+scripts/
+  build-opencode.ts    # Relocated build script
+package.json           # Root: npm scripts for build
+tsconfig.json          # Root: TS config for build scripts
+build/                 # GITIGNORED
+  cdocs/
+    opencode/          # Generated OC output
+      agents/
+      skills/
+      rules/
+      plugins/
+      scripts/
+      package.json
+.gitignore             # build/ added
+```
+
+## Proposed Solution
+
+### Root workspace configuration
+
+Add a root `package.json` with npm scripts wrapping the build:
+
+```json
+{
+  "private": true,
+  "scripts": {
+    "build": "npx tsx scripts/build-opencode.ts",
+    "build:cdocs": "npx tsx scripts/build-opencode.ts cdocs"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}
+```
+
+Add a root `tsconfig.json` providing type checking for build scripts:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["scripts/**/*.ts"]
+}
+```
+
+> NOTE: This `tsconfig.json` scopes to `scripts/` only. It does not cover plugin source files (which are markdown, shell scripts, and the hand-written OC hooks TS file).
+
+### Build script relocation and refactoring
+
+Move `plugins/cdocs/scripts/build-opencode.ts` to `scripts/build-opencode.ts`.
+
+Key changes to the script:
+
+1. **Output directory**: Change from `join(PLUGIN_ROOT, "opencode")` to `join(REPO_ROOT, "build", pluginName, "opencode")`.
+2. **Plugin root resolution**: Accept a plugin name argument (defaulting to `cdocs`) and resolve `plugins/<name>/` from the repo root.
+3. **Repo root**: Resolve from the script's own location (`resolve(dirname(...), "..")`).
+4. **OC hooks file**: The hand-written `cdocs-hooks.ts` currently lives at `plugins/cdocs/opencode/plugins/cdocs-hooks.ts`. Since `opencode/` is being gitignored, this file needs a canonical home. Move it to `plugins/cdocs/opencode-src/plugins/cdocs-hooks.ts` (or similar) and have the build script copy it into the output. This is the one file in the current `opencode/` directory that is hand-written, not generated.
+
+### OC hooks file relocation
+
+The `cdocs-hooks.ts` file is currently the only hand-written file inside the generated `opencode/` directory.
+It needs a canonical source location that is committed to git.
+
+Place it at `plugins/cdocs/hooks/cdocs-hooks.ts` alongside the existing CC hook shell scripts.
+The build script copies it into `build/cdocs/opencode/plugins/`.
+Similarly, `postinstall.js` is hand-written and currently lives at `plugins/cdocs/opencode/scripts/postinstall.js`.
+Move it to `plugins/cdocs/scripts/postinstall.js` (it can coexist with `build-opencode.ts` until the build script moves to the root).
+
+> NOTE: After the build script moves to `scripts/build-opencode.ts`, `plugins/cdocs/scripts/` will contain only `postinstall.js` and any other plugin-specific scripts.
+
+### Gitignore and gitattributes changes
+
+Add `build/` to `.gitignore`.
+Remove or simplify `.gitattributes` -- the `linguist-generated` markers for `plugins/cdocs/opencode/**` are no longer needed since those files will not be committed.
+
+### CI workflow update
+
+Replace the current dirty-check workflow with build+validate+publish:
+
+```yaml
+name: OpenCode Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plugins/cdocs/**"
+      - "scripts/build-opencode.ts"
+      - ".github/workflows/opencode-build.yml"
+  pull_request:
+    paths:
+      - "plugins/cdocs/**"
+      - "scripts/build-opencode.ts"
+      - ".github/workflows/opencode-build.yml"
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - run: npm run build:cdocs
+
+      - name: Validate generated agent frontmatter
+        run: |
+          for agent in build/cdocs/opencode/agents/*.md; do
+            # ... same validation as today ...
+          done
+
+      - name: Validate npm package
+        working-directory: build/cdocs/opencode
+        run: npm pack --dry-run
+
+  publish:
+    needs: build-and-validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+      - run: npm ci
+      - run: npm run build:cdocs
+      - name: Publish to npm
+        working-directory: build/cdocs/opencode
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        continue-on-error: true  # Skip if version already published
+```
+
+> NOTE: The publish job is optional and gated on `NPM_TOKEN` being configured. Until that is set up, CI still validates the build succeeds.
+
+### Documentation updates
+
+Update `CLAUDE.md` "Multi-Target Marketplace" section:
+- Build script path: `scripts/build-opencode.ts`
+- Generated output: `build/cdocs/opencode/` (gitignored, never committed)
+- Build command: `npm run build:cdocs`
+- Remove "committed, never edit manually" language; replace with "gitignored, built on demand"
+
+Update `plugins/cdocs/README.md` "Building OC artifacts from source" section:
+- New build command: `npm run build:cdocs` (or `npx tsx scripts/build-opencode.ts`)
+- New output location: `build/cdocs/opencode/`
+- Remove reference to committed generated files
+
+## Important Design Decisions
+
+### Decision: Build artifacts are gitignored, not committed
+
+**Why:** Committed build artifacts create duplication in version control (24 files that are derivable from source), require developers to remember to regenerate, and blur the distinction between source and output.
+Gitignoring the build output is cleaner: `build/` is transient, CI builds fresh on every run, and `npm publish` produces the tarball from the build output.
+The tradeoff is that consumers cannot browse generated OC files in the GitHub repo, but this is acceptable since the canonical source is CC-format and OC consumers install via npm.
+
+### Decision: npm + tsx, no bun dependency
+
+**Why:** The repo currently has no JS/TS tooling at the root.
+npm is ubiquitous, `tsx` handles TypeScript execution without a compilation step, and adding `typescript` as a devDependency enables `tsc --noEmit` for type checking.
+Bun may be adopted later, but introducing it now adds an unnecessary dependency for CI and contributors.
+
+### Decision: Skills/rules bundled in the npm tarball
+
+**Why:** The postinstall script copies skills and rules from the package to project paths.
+For standalone npm installs (outside the monorepo), the canonical `plugins/cdocs/skills/` tree is not available.
+The build script must copy skills and rules into the build output so they are included in the npm tarball.
+This is not duplication in the meaningful sense: the copies exist only in `build/` (gitignored) and the npm tarball (a distribution artifact), never in committed source.
+
+### Decision: Multi-plugin ready via `build/<plugin>/opencode/`
+
+**Why:** If future plugins are added to the marketplace (e.g., a `changelog` plugin), each would need its own OC build output.
+Using `build/<plugin>/opencode/` rather than `build/opencode/` avoids restructuring later.
+The build script accepts a plugin name argument, making it straightforward to add support for new plugins.
+
+### Decision: Hand-written OC files move to canonical locations under `plugins/cdocs/`
+
+**Why:** The `cdocs-hooks.ts` OC plugin and `postinstall.js` are hand-written files that currently live inside the generated `opencode/` directory.
+When `opencode/` becomes gitignored, these files need committed canonical locations.
+Placing them under `plugins/cdocs/hooks/` and `plugins/cdocs/scripts/` respectively keeps them co-located with the plugin source they belong to, and the build script copies them into the output.
+
+## Edge Cases
+
+### First-time setup
+
+A new contributor cloning the repo will not have `build/` populated.
+Running `npm install && npm run build` must work from a clean clone.
+The CI workflow validates this on every PR.
+
+### Version bump coordination
+
+The npm package version comes from `plugins/cdocs/.claude-plugin/plugin.json`.
+If the version is not bumped, `npm publish` will fail with "version already exists" (the `continue-on-error` in CI handles this gracefully).
+This is the same behavior as today -- no change needed.
+
+### Empty build directory
+
+If `build/` does not exist, the build script creates it (it already uses `mkdirSync({ recursive: true })`).
+No special handling needed.
+
+### postinstall.js portability
+
+The postinstall script uses `__dirname`-relative paths to find skills/rules in the npm package.
+Since the build output structure (`skills/`, `rules/`, `scripts/postinstall.js`) is unchanged, the postinstall script works identically from `build/cdocs/opencode/` as it does from `plugins/cdocs/opencode/`.
+No changes to postinstall logic are needed.
+
+### Partial builds
+
+If the build script fails mid-execution (e.g., a malformed agent file), the `build/` directory may contain stale partial output.
+The build script should clean the output directory at the start of each run (it already does `rmSync` on subdirectories).
+Extending this to `rmSync` the entire `build/cdocs/opencode/` at the top of `main()` ensures a clean slate.
+
+## Implementation Phases
+
+### Phase 1: Workspace setup and build script relocation
+
+**What:**
+- Add root `package.json` with `build` and `build:cdocs` npm scripts.
+- Add root `tsconfig.json` scoped to `scripts/`.
+- Move `plugins/cdocs/scripts/build-opencode.ts` to `scripts/build-opencode.ts`.
+- Update the build script to:
+  - Accept a plugin name argument (default: `cdocs`).
+  - Resolve plugin root from repo root as `plugins/<name>/`.
+  - Output to `build/<name>/opencode/`.
+  - Clean the entire output directory at the start.
+- Move `plugins/cdocs/opencode/plugins/cdocs-hooks.ts` to `plugins/cdocs/hooks/cdocs-hooks.ts`.
+- Move `plugins/cdocs/opencode/scripts/postinstall.js` to `plugins/cdocs/scripts/postinstall.js` (if not already there -- verify current state).
+- Update the build script to copy `cdocs-hooks.ts` and `postinstall.js` from their canonical locations.
+- Add `build/` to `.gitignore`.
+- Remove or simplify `.gitattributes` (remove `linguist-generated` markers for `plugins/cdocs/opencode/`).
+- Delete `plugins/cdocs/opencode/` (the committed generated directory).
+
+**Verification:**
+- `npm install && npm run build:cdocs` succeeds from a clean state.
+- `build/cdocs/opencode/` contains the same files that `plugins/cdocs/opencode/` previously contained.
+- `npm pack --dry-run` in `build/cdocs/opencode/` succeeds.
+- `build/` is gitignored and `plugins/cdocs/opencode/` no longer exists in version control.
+
+### Phase 2: CI and documentation updates
+
+**What:**
+- Update `.github/workflows/opencode-build.yml`:
+  - Replace `tsx plugins/cdocs/scripts/build-opencode.ts` with `npm ci && npm run build:cdocs`.
+  - Remove the dirty-check step.
+  - Update validation paths from `plugins/cdocs/opencode/` to `build/cdocs/opencode/`.
+  - Add an optional publish job (gated on `NPM_TOKEN` secret and main branch push).
+  - Update trigger paths to include `scripts/build-opencode.ts`.
+- Update `CLAUDE.md` "Multi-Target Marketplace" section with new paths and commands.
+- Update `plugins/cdocs/README.md` "Building OC artifacts from source" and "OpenCode Installation" sections.
+- Run `npm run build:cdocs` to verify end-to-end after all changes.
+
+**Verification:**
+- CI workflow syntax is valid (`act` or manual inspection).
+- Documentation references are internally consistent (no stale paths).
+- A full build from clean clone produces a valid npm package.
 
 ## Open Questions
 
-1. **Commit or build-only?** Should `build/cdocs/opencode/` still be committed (with dirty check in CI), or should CI build and publish without committing artifacts? Committing is simpler for consumers who clone the repo; build-only is cleaner but requires CI for npm publishing.
-2. **Workspace tool:** Should the workspace use `npm workspaces`, `bun workspaces`, or just a root `package.json` with scripts? The repo currently has no JS/TS tooling at the root.
-3. **npm tarball contents:** If skills/rules are not duplicated into the build output, the postinstall script needs to fetch or resolve them from the canonical `plugins/cdocs/` tree. This works for monorepo consumers but breaks for standalone npm installs (the canonical source isn't in the tarball). How should standalone npm installs get skills/rules?
-4. **Future plugins:** If other plugins are added to the marketplace, should `build/` accommodate a multi-plugin structure (e.g., `build/<plugin>/opencode/`)?
+1. **Publish trigger:** Should CI publish on every push to main that touches plugin source, or should publishing be manual / tag-gated? The proposal includes an auto-publish-on-main approach with `continue-on-error` for already-published versions, but tag-gated publishing (e.g., `v0.2.0-cdocs-oc`) would give more control.
