@@ -1,0 +1,72 @@
+# CI workflow for OpenCode build artifacts.
+# Validates that generated files in plugins/cdocs/opencode/ are up to date.
+#
+# Triggers on changes to plugins/cdocs/ source files.
+# Uses continue-on-error so CC-only PRs are not blocked by OC build failures.
+
+name: OpenCode Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plugins/cdocs/**"
+      - ".github/workflows/opencode-build.yml"
+  pull_request:
+    paths:
+      - "plugins/cdocs/**"
+      - ".github/workflows/opencode-build.yml"
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install tsx
+        run: npm install -g tsx
+
+      - name: Run build script
+        run: npx tsx plugins/cdocs/scripts/build-opencode.ts
+
+      - name: Dirty check (generated files must be up to date)
+        run: |
+          git diff --exit-code plugins/cdocs/opencode/ || {
+            echo "::error::Generated files in plugins/cdocs/opencode/ are stale. Run 'npx tsx plugins/cdocs/scripts/build-opencode.ts' and commit the output."
+            git diff --stat plugins/cdocs/opencode/
+            exit 1
+          }
+
+      - name: Validate generated agent frontmatter (YAML lint)
+        run: |
+          for agent in plugins/cdocs/opencode/agents/*.md; do
+            echo "Validating: $agent"
+            # Check frontmatter delimiters exist
+            head_line=$(head -1 "$agent")
+            if [ "$head_line" != "---" ]; then
+              echo "::error::$agent missing opening frontmatter delimiter"
+              exit 1
+            fi
+            # Check closing delimiter exists (line 2+)
+            if ! tail -n +2 "$agent" | grep -qm1 '^---$'; then
+              echo "::error::$agent missing closing frontmatter delimiter"
+              exit 1
+            fi
+            # Check required OC fields
+            for field in description mode model tools; do
+              if ! head -20 "$agent" | grep -q "^${field}:"; then
+                echo "::error::$agent missing required field: $field"
+                exit 1
+              fi
+            done
+            echo "  OK"
+          done
+
+      - name: Validate npm package
+        working-directory: plugins/cdocs/opencode
+        run: npm pack --dry-run

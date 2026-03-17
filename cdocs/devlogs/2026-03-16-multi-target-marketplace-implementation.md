@@ -25,7 +25,7 @@ Seven phases executed sequentially, with a commit after each phase:
 - [x] Phase 2: Verify existing AGENTS.md and rules integration (verification-only, no changes)
 - [x] Phase 3: Hand-write OC hooks plugin (frontmatter validation only)
 - [x] Phase 4: npm packaging (package.json, postinstall, npm pack test)
-- [ ] Phase 5: CI/CD (GitHub Actions workflow, dirty check)
+- [x] Phase 5: CI/CD (GitHub Actions workflow, dirty check)
 - [ ] Phase 6: Documentation and README updates
 
 Each phase is reviewed via `/cdocs:review` before proceeding.
