@@ -32,7 +32,7 @@ jobs:
         run: npm install -g tsx
 
       - name: Run build script
-        run: npx tsx plugins/cdocs/scripts/build-opencode.ts
+        run: tsx plugins/cdocs/scripts/build-opencode.ts
 
       - name: Dirty check (generated files must be up to date)
         run: |

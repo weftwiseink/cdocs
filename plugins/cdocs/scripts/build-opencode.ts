@@ -18,7 +18,7 @@
  */
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, cpSync, rmSync } from "fs";
-import { join, resolve, dirname, relative } from "path";
+import { join, resolve, dirname } from "path";
 
 // ---------------------------------------------------------------------------
 // Paths
@@ -123,12 +123,14 @@ function parseFrontmatter(content: string): { frontmatter: CCFrontmatter; body: 
   const body = match[2];
   const frontmatter: CCFrontmatter = {};
 
+  // Simple state machine: when we see "skills:", we initialize the list,
+  // then subsequent "  - item" lines push to it. The list collection ends
+  // naturally when the next key-value line is encountered.
   for (const line of fmRaw.split("\n")) {
     const kvMatch = line.match(/^(\w[\w-]*?):\s*(.*)$/);
     if (kvMatch) {
       const [, key, value] = kvMatch;
       if (key === "skills") {
-        // skills is a list — collect subsequent lines starting with "  - "
         frontmatter.skills = [];
         continue;
       }
